@@ -9,7 +9,7 @@ namespace Samples
 		public NotebookSample ()
 		{
 			Notebook nb = new Notebook ();
-			nb.Add (new Label ("First tab content"), "First Tab");
+			nb.Add (new Label ("First tab content"), "First Tab", StockIcons.Information);
 			nb.Add (new MyWidget (), "Second Tab");
 			nb.TabOrientation = NotebookTabOrientation.Bottom;
 			PackStart (nb, true);
@@ -18,6 +18,12 @@ namespace Samples
 	
 	class MyWidget: Canvas
 	{
+		public MyWidget()
+		{
+			MinWidth = 210;
+			MinHeight = 110;
+		}
+
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			ctx.SetLineWidth (5);
