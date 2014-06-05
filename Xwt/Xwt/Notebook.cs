@@ -149,7 +149,12 @@ namespace Xwt
 			get { return Backend.TabOrientation; }
 			set { Backend.TabOrientation = value; }
 		}
-		
+
+		public bool ExpandTabLabels {
+			get { return Backend.ExpandTabLabels; }
+			set { Backend.ExpandTabLabels = value; }
+		}
+
 		protected virtual void OnCurrentTabChanged (EventArgs e)
 		{
 			if (currentTabChanged != null)
