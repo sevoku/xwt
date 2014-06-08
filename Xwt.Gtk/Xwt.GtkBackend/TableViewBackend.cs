@@ -29,6 +29,10 @@ using Xwt.Backends;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
+using Gtk;
+#if XWT_GTK3
+using TreeModel = Gtk.ITreeModel;
+#endif
 
 namespace Xwt.GtkBackend
 {
@@ -235,11 +239,8 @@ namespace Xwt.GtkBackend
 
 			int x = 0;
 			int th = 0;
-			#if XWT_GTK3
-			CellRenderer[] renderers = col.Cells;
-			#else
-			CellRenderer[] renderers = col.CellRenderers;
-			#endif
+			CellRenderer[] renderers = col.GetCellRenderers();
+
 			foreach (CellRenderer cr in renderers) {
 				int sp, wi, he, xo, yo;
 				col.CellGetSize (rect, out xo, out yo, out wi, out he);
@@ -281,11 +282,7 @@ namespace Xwt.GtkBackend
 			get { return Widget; }
 		}
 
-		#if XWT_GTK3
-		ITreeModel ICellRendererTarget.Model {
-		#else
 		TreeModel ICellRendererTarget.Model {
-		#endif
 			get { return Widget.Model; }
 		}
 

@@ -34,7 +34,7 @@ using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public class WidgetBackend: IWidgetBackend, IGtkWidgetBackend
+	public partial class WidgetBackend: IWidgetBackend, IGtkWidgetBackend
 	{
 		Gtk.Widget widget;
 		Widget frontend;
@@ -122,12 +122,6 @@ namespace Xwt.GtkBackend
 				if (eventBox != null)
 					eventBox.Visible = value;
 			}
-		}
-
-		double opacity = 1d;
-		public double Opacity {
-			get { return opacity; }
-			set { opacity = value; }
 		}
 
 		void RunWhenRealized (Action a)
@@ -310,69 +304,6 @@ namespace Xwt.GtkBackend
 			y += a.Y;
 			return new Point (x + widgetCoordinates.X, y + widgetCoordinates.Y);
 		}
-		
-		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
-		{
-			try {
-				SetSizeConstraints (widthConstraint, heightConstraint);
-
-				#if XWT_GTK3
-				int min_width = 0;
-				int min_height = 0;
-
-				IWidgetBackend xwt_backend = Widget as IWidgetBackend;
-				if (xwt_backend != null) {
-					var size = xwt_backend.GetPreferredSize (widthConstraint, heightConstraint);
-					min_width = (int)size.Width;
-					min_height = (int)size.Height;
-				} else {
-					int nat_width, nat_height;
-					if (widthConstraint.IsConstrained) {
-						Widget.GetPreferredHeightForWidth((int)widthConstraint.AvailableSize, out min_height, out nat_height);
-					}
-					else if (heightConstraint.IsConstrained) {
-						Widget.GetPreferredWidthForHeight ((int)heightConstraint.AvailableSize, out min_width, out nat_width);
-					} else if ((heightConstraint.IsConstrained) && (widthConstraint.IsConstrained)) {
-					} else {
-						Widget.GetPreferredHeight (out min_height, out nat_height);
-						Widget.GetPreferredWidth (out min_width, out nat_width);
-					}
-				}
-
-				if ((enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
-					SizeConstraint wc = SizeConstraint.Unconstrained, hc = SizeConstraint.Unconstrained;
-					var cp = Widget.Parent as IConstraintProvider;
-					if (cp != null)
-						cp.GetConstraints (Widget, out wc, out hc);
-
-					ApplicationContext.InvokeUserCode (delegate {
-						var w = eventSink.GetPreferredSize (wc, hc);
-						min_width = (int) w.Width;
-						min_height = (int) w.Height;
-					});
-				}
-
-				if (Widget.WidthRequest > min_width)
-					min_width = Widget.WidthRequest;
-				if (Widget.HeightRequest > min_height)
-					min_height = Widget.HeightRequest;
-
-				if (Frontend.MinWidth > 0 && Frontend.MinWidth > min_width)
-					min_width = (int) Frontend.MinWidth;
-
-				if (Frontend.MinHeight > 0 && Frontend.MinHeight > min_height)
-					min_height = (int) Frontend.MinHeight;
-
-				return new Size(min_width, min_height);
-				#else
-				gettingPreferredSize = true;
-				var sr = Widget.SizeRequest ();
-				return new Size (sr.Width, sr.Height);
-				#endif
-			} finally {
-				gettingPreferredSize = false;
-			}
-		}
 
 		public void SetMinSize (double width, double height)
 		{
@@ -416,11 +347,11 @@ namespace Xwt.GtkBackend
 			set {
 				customBackgroundColor = value;
 				AllocEventBox (visibleWindow: true);
-				EventsRootWidget.ModifyBg (Gtk.StateType.Normal, value.ToGtkValue ());
+				OnSetBackgroundColor (value);
 			}
 		}
 		
-		public bool UsingCustomBackgroundColor {
+		public virtual bool UsingCustomBackgroundColor {
 			get { return customBackgroundColor.HasValue; }
 		}
 		
@@ -519,11 +450,7 @@ namespace Xwt.GtkBackend
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
 
-			#if XWT_GTK3
-			if (eventBox == null && !EventsRootWidget.HasWindow) {
-			#else
-			if (eventBox == null && EventsRootWidget.IsNoWindow) {
-			#endif
+			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
 				if (EventsRootWidget is Gtk.EventBox) {
 					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
 					return;
@@ -611,16 +538,6 @@ namespace Xwt.GtkBackend
 				enabledEvents |= ev;
 			}
 		}
-
-		void EnableSizeCheckEvents ()
-		{
-			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
-				// Enabling a size request event for the first time
-				#if !XWT_GTK3
-				Widget.SizeRequested += HandleWidgetSizeRequested;
-				#endif
-			}
-		}
 		
 		public virtual void DisableEvent (object eventId)
 		{
@@ -692,16 +609,6 @@ namespace Xwt.GtkBackend
 				}
 			}
 		}
-		
-		void DisableSizeCheckEvents ()
-		{
-			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
-				// All size request events have been disabled
-				#if !XWT_GTK3
-				Widget.SizeRequested -= HandleWidgetSizeRequested;
-				#endif
-			}
-		}
 
 		Gdk.Rectangle lastAllocation;
 		void HandleWidgetBoundsChanged (object o, Gtk.SizeAllocatedArgs args)
@@ -713,35 +620,7 @@ namespace Xwt.GtkBackend
 				});
 			}
 		}
-		
-		bool gettingPreferredSize;
 
-		#if !XWT_GTK3
-		void HandleWidgetSizeRequested (object o, Gtk.SizeRequestedArgs args)
-		{
-			var req = args.Requisition;
-
-			if (!gettingPreferredSize && (enabledEvents & WidgetEvent.PreferredSizeCheck) != 0) {
-				SizeConstraint wc = SizeConstraint.Unconstrained, hc = SizeConstraint.Unconstrained;
-				var cp = Widget.Parent as IConstraintProvider;
-				if (cp != null)
-					cp.GetConstraints (Widget, out wc, out hc);
-
-				ApplicationContext.InvokeUserCode (delegate {
-					var w = eventSink.GetPreferredSize (wc, hc);
-					req.Width = (int) w.Width;
-					req.Height = (int) w.Height;
-				});
-			}
-
-			if (Frontend.MinWidth != -1 && Frontend.MinWidth > req.Width)
-				req.Width = (int) Frontend.MinWidth;
-			if (Frontend.MinHeight != -1 && Frontend.MinHeight > req.Height)
-				req.Height = (int) Frontend.MinHeight;
-
-			args.Requisition = req;
-		}
-		#endif
 
 		[GLib.ConnectBefore]
 		void HandleKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
@@ -927,11 +806,7 @@ namespace Xwt.GtkBackend
 		internal bool DoDragDrop (Gdk.DragContext context, int x, int y, uint time)
 		{
 			DragDropInfo.LastDragPosition = new Point (x, y);
-			#if XWT_GTK3
-			var cda = ConvertDragAction (context.SelectedAction);
-			#else
-			var cda = ConvertDragAction (context.Action);
-			#endif
+			var cda = ConvertDragAction (context.GetSelectedAction());
 
 			DragDropResult res;
 			if ((enabledEvents & WidgetEvent.DragDropCheck) == 0) {
@@ -941,11 +816,7 @@ namespace Xwt.GtkBackend
 					res = DragDropResult.Canceled;
 			}
 			else {
-				#if XWT_GTK3
 				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.ListTargets ()), cda);
-				#else
-				DragCheckEventArgs da = new DragCheckEventArgs (new Point (x, y), Util.GetDragTypes (context.Targets), cda);
-				#endif
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnDragDropCheck (da);
 				});
@@ -1031,11 +902,7 @@ namespace Xwt.GtkBackend
 				}
 				else {
 					// Use Context.Action here since that's the action selected in DragOver
-					#if XWT_GTK3
-					var cda = ConvertDragAction (context.SelectedAction);
-					#else
-					var cda = ConvertDragAction (context.Action);
-					#endif
+					var cda = ConvertDragAction (context.GetSelectedAction());
 					DragEventArgs da = new DragEventArgs (DragDropInfo.LastDragPosition, DragDropInfo.DragData, cda);
 					ApplicationContext.InvokeUserCode (delegate {
 						EventSink.OnDragDrop (da);

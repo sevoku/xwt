@@ -26,14 +26,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Gtk;
+#if XWT_GTK3
+using TreeModelImplementor = Gtk.ITreeModelImplementor;
+#endif
 
 namespace Xwt.GtkBackend
 {
-	#if XWT_GTK3
-	public class CustomTreeModel: GLib.Object, Gtk.ITreeModelImplementor
-	#else
-	public class CustomTreeModel: Gtk.TreeModelImplementor
-	#endif
+	public class CustomTreeModel: TreeModelImplementor
 	{
 
 		ITreeDataSource source;
@@ -80,13 +80,9 @@ namespace Xwt.GtkBackend
 		TreePosition NodeFromIter (Gtk.TreeIter iter)
 		{
 			TreePosition node;
-			try {
-				GCHandle gch = (GCHandle)iter.UserData;
-				nodeHash.TryGetValue (gch, out node);
-				return node;
-			} catch {
-				return null;
-			}
+			GCHandle gch = (GCHandle)iter.UserData;
+			nodeHash.TryGetValue (gch, out node);
+			return node;
 		}
 		
 		#region TreeModelImplementor implementation
