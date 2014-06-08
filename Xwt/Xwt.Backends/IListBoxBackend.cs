@@ -41,6 +41,7 @@ namespace Xwt.Backends
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
 		GridLines GridLines { get; set; }
+		void ScrollToRow (int row);
 	}
 
 	/// <summary>

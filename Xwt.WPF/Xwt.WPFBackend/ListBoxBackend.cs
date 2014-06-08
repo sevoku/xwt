@@ -138,6 +138,11 @@ namespace Xwt.WPFBackend
 			ListBox.UnselectAll();
 		}
 
+		public void ScrollToRow (int row)
+		{
+			ListBox.ScrollIntoView (ListBox.Items [row]);
+		}
+
 		public int[] SelectedRows {
 			get { return ListBox.SelectedItems.Cast<object>().Select (ListBox.Items.IndexOf).ToArray(); }
 		}
