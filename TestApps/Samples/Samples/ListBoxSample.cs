@@ -69,18 +69,30 @@ namespace Samples
 			PackStart (customList, true);
 
 			txtFilter.Changed += (sender, e) => {
-				if (String.IsNullOrEmpty (txtFilter.Text))
+				if (String.IsNullOrEmpty (txtFilter.Text)) {
 					list.Filter = null;
+					customList.Filter = null;
+				}
 				else {
 					if (list.Filter == null)
 						list.Filter = row => {
+						if (String.IsNullOrEmpty (txtFilter.Text))
+							return true;
+						if (list.Items[row].ToString().Contains (txtFilter.Text))
+							return true;
+						return false;
+					};
+					list.Refilter();
+
+					if (customList.Filter == null)
+						customList.Filter = row => {
 						if (String.IsNullOrEmpty (txtFilter.Text))
 							return true;
 						if (store.GetValue (row, name).Contains (txtFilter.Text))
 							return true;
 						return false;
 					};
-					list.Refilter();
+					customList.Refilter();
 				}
 			};
 		}	
