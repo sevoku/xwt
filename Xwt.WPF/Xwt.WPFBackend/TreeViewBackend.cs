@@ -368,6 +368,28 @@ namespace Xwt.WPFBackend
 			return treeItem;
 		}
 
+		public void SetFilterFunct (TreeViewFilterFunc filter)
+		{
+			if (filter != null)
+				Tree.ItemsView.Filter = OnFilterRow;
+			else 
+				Tree.ItemsView.Filter = null;
+			Refilter ();
+		}
+
+		bool OnFilterRow (object row)
+		{
+			var node = row as TreePosition;
+			if (node != null)
+				return TreeViewEventSink.OnFilterRow (node);
+			return true;
+		}
+
+		public void Refilter ()
+		{
+			Tree.ItemsView.Refresh ();
+		}
+
 		private FrameworkElementFactory CreateExpanderDock ()
 		{
 			var dockFactory = new FrameworkElementFactory (typeof (DockPanel));

@@ -244,6 +244,31 @@ namespace Xwt.WPFBackend
         public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
         {
             throw new NotImplementedException();
-        }
+		}
+
+		public void SetFilterFunct (ListViewFilterFunc filter)
+		{
+			if (filter != null)
+				ListView.ItemsView.Filter = OnFilterRow;
+			else 
+				ListView.ItemsView.Filter = null;
+			Refilter ();
+		}
+
+		bool OnFilterRow (object row)
+		{
+			var source = ListView.ItemsSource as ListDataSource;
+			if (source != null) {
+				var rowContainer = row as ValuesContainer;
+				if (rowContainer != null)
+					return ListViewEventSink.OnFilterRow (source.IndexOf ((ValuesContainer)row));
+			}
+			return true;
+		}
+
+		public void Refilter ()
+		{
+			ListView.ItemsView.Refresh ();
+		}
     }
 }

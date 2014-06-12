@@ -170,5 +170,30 @@ namespace Xwt.WPFBackend
 		protected IListBoxEventSink ListBoxEventSink {
 			get { return (IListBoxEventSink) EventSink; }
 		}
+
+		public void SetFilterFunct (ListViewFilterFunc filter)
+		{
+			if (filter != null)
+				ListBox.ItemsView.Filter = OnFilterRow;
+			else 
+				ListBox.ItemsView.Filter = null;
+			Refilter ();
+		}
+
+		bool OnFilterRow (object row)
+		{
+			var source = ListBox.ItemsSource as ListDataSource;
+			if (source != null) {
+				var rowContainer = row as ValuesContainer;
+				if (rowContainer != null)
+					return ListBoxEventSink.OnFilterRow (source.IndexOf ((ValuesContainer)row));
+			}
+			return true;
+		}
+
+		public void Refilter ()
+		{
+			ListBox.ItemsView.Refresh ();
+		}
 	}
 }

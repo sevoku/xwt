@@ -171,6 +171,11 @@ namespace Xwt.WPFBackend
 			return this.rows.GetEnumerator ();
 		}
 
+		internal int IndexOf (ValuesContainer rowContainer)
+		{
+			return rows.IndexOf (rowContainer);
+		}
+
 		private readonly ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer> ();
 		private Type[] columnTypes;
 

@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
 using System.Windows.Input;
+using System.Windows.Data;
 
 namespace Xwt.WPFBackend
 {
@@ -72,6 +73,12 @@ namespace Xwt.WPFBackend
 		public GridView View
 		{
 			get { return this.view; }
+		}
+
+		public CollectionView ItemsView {
+			get {
+				return (CollectionView)CollectionViewSource.GetDefaultView (this.ItemsSource);
+			}
 		}
 
 		public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register ("SelectionMode",

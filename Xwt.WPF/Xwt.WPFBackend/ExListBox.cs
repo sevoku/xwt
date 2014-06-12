@@ -31,6 +31,7 @@ using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using SWC = System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Xwt.WPFBackend
 {
@@ -40,6 +41,12 @@ namespace Xwt.WPFBackend
 		public WidgetBackend Backend {
 			get;
 			set;
+		}
+
+		public CollectionView ItemsView {
+			get {
+				return (CollectionView)CollectionViewSource.GetDefaultView (this.ItemsSource);
+			}
 		}
 
 		protected override System.Windows.Size MeasureOverride (System.Windows.Size constraint)
