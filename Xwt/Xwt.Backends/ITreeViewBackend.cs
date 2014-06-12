@@ -35,6 +35,9 @@ namespace Xwt.Backends
 		TreePosition[] SelectedRows { get; }
 		void SelectRow (TreePosition pos);
 		void UnselectRow (TreePosition pos);
+
+		void SetFilterFunct (TreeViewFilterFunc filter);
+		void Refilter ();
 		
 		bool IsRowSelected (TreePosition pos);
 		bool IsRowExpanded (TreePosition pos);
@@ -72,6 +75,9 @@ namespace Xwt.Backends
 		void OnRowActivated (TreePosition position);
 		void OnRowExpanding (TreePosition position);
 		void OnRowExpanded (TreePosition position);
+		bool OnFilterRow (TreePosition position);
 	}
+
+	public delegate bool TreeViewFilterFunc (TreePosition position);
 }
 

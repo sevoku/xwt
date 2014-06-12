@@ -35,6 +35,9 @@ namespace Xwt.Backends
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
 
+		void SetFilterFunct (ListViewFilterFunc filter);
+		void Refilter ();
+
 		bool BorderVisible { get; set; }
 		bool HeadersVisible { get; set; }
 
@@ -50,6 +53,9 @@ namespace Xwt.Backends
 	public interface IListViewEventSink: ITableViewEventSink
 	{
 		void OnRowActivated (int rowIndex);
+		bool OnFilterRow (int rowIndex);
 	}
+
+	public delegate bool ListViewFilterFunc (int rowIndex);
 }
 

@@ -14,13 +14,21 @@ namespace Samples
 
 		public ListView1 ()
 		{
-			PackStart (new Label ("The listview should have a red background"));
+			var filterBox = new HBox ();
+			var txtFilter = new TextEntry ();
+			filterBox.PackStart (new Label ("Filter:"));
+			filterBox.PackStart (txtFilter, true);
+			PackStart (filterBox);
+
 			ListView list = new ListView ();
 			ListStore store = new ListStore (name, icon, text, icon2, progress);
 			list.DataSource = store;
-			list.Columns.Add ("Name", icon, name);
+			var col1 = list.Columns.Add ("Name", icon, name);
 			list.Columns.Add ("Text", icon2, text);
 			list.Columns.Add ("Progress", new TextCellView () { TextField = text }, new CustomCell () { ValueField = progress });
+
+			col1.SortIndicatorVisible = true;
+			col1.SortDataField = name;
 
 			var png = Image.FromResource (typeof(App), "class.png");
 
@@ -34,6 +42,23 @@ namespace Samples
 				store.SetValue (r, text, "Text " + n);
 				store.SetValue (r, progress, new CellData { Value = rand.Next () % 100 });
 			}
+
+			txtFilter.Changed += (sender, e) => {
+				if (String.IsNullOrEmpty (txtFilter.Text))
+					list.Filter = null;
+				else {
+					if (list.Filter == null)
+						list.Filter = row => {
+							if (String.IsNullOrEmpty (txtFilter.Text))
+								return true;
+							if (store.GetValue (row, name).Contains (txtFilter.Text))
+								return true;
+							return false;
+					};
+					list.Refilter();
+				}
+			};
+
 			PackStart (list, true);
 
 			list.RowActivated += delegate(object sender, ListViewRowEventArgs e) {
@@ -57,6 +82,7 @@ namespace Samples
 			};
 			PackStart (but);
 		}
+
 	}
 
 	class CellData

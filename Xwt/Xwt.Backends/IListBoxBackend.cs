@@ -40,6 +40,8 @@ namespace Xwt.Backends
 		int[] SelectedRows { get; }
 		void SelectRow (int pos);
 		void UnselectRow (int pos);
+		void SetFilterFunct (ListViewFilterFunc filter);
+		void Refilter ();
 	}
 
 	/// <summary>

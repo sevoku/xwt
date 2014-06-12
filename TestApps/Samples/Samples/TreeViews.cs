@@ -34,11 +34,21 @@ namespace Samples
 		DataField<bool> check = new DataField<bool>();
 		DataField<string> text = new DataField<string> ();
 		DataField<string> desc = new DataField<string> ();
+
+		TreeView view;
+		TreeStore store;
+		TextEntry txtFilter;
 		
 		public TreeViews ()
 		{
-			TreeView view = new TreeView ();
-			TreeStore store = new TreeStore (triState, check, text, desc);
+			var filterBox = new HBox ();
+			txtFilter = new TextEntry ();
+			filterBox.PackStart (new Label ("Filter:"));
+			filterBox.PackStart (txtFilter, true);
+			PackStart (filterBox);
+
+			view = new TreeView ();
+			store = new TreeStore (triState, check, text, desc);
 		
 			var triStateCellView = new CheckBoxCellView (triState) { Editable = true, AllowMixed = true };
 			triStateCellView.Toggled += (object sender, WidgetEventArgs e) => {
@@ -68,6 +78,17 @@ namespace Samples
 				.SetValue (text, "Sub two").SetValue (desc, "Sub second");
 			store.AddNode ().SetValue (text, "Three").SetValue (desc, "Third").AddChild ()
 				.SetValue (text, "Sub three").SetValue (desc, "Sub third");
+
+			txtFilter.Changed += (sender, e) => {
+				if (String.IsNullOrEmpty (txtFilter.Text))
+					view.Filter = null;
+				else {
+					if (view.Filter == null)
+						view.Filter = Filter;
+					view.Refilter();
+				}
+			};
+
 			PackStart (view, true);
 			
 			view.DataSource = store;
@@ -121,6 +142,25 @@ namespace Samples
 			PackStart (label);
 
 			view.RowExpanded += (sender, e) => label.Text = "Row expanded: " + store.GetNavigatorAt (e.Position).GetValue (text);
+		}
+
+		bool Filter (TreePosition position)
+		{
+			if (String.IsNullOrEmpty (txtFilter.Text))
+				return true; // always visible if no filter entered
+
+			if (store.GetNavigatorAt (position).GetValue(text).Contains (txtFilter.Text))
+				return true;
+
+			// filter children
+			var navigateChildren = store.GetNavigatorAt (position);
+			if (navigateChildren.MoveToChild ()) {
+				do {
+					if (Filter (navigateChildren.CurrentPosition))
+						return true;
+				} while (navigateChildren.MoveNext ());
+			}
+			return false;
 		}
 
 		void HandleDragOver (object sender, DragOverEventArgs e)

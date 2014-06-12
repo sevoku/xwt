@@ -60,6 +60,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ListView;
 			}
+
+			public bool OnFilterRow (int row)
+			{
+				return Parent.OnFilterRow (row);
+			}
 		}
 		
 		static ListView ()
@@ -270,6 +275,29 @@ namespace Xwt
 				rowActivated -= value;
 				BackendHost.OnAfterEventRemove (ListViewEvent.RowActivated, rowActivated);
 			}
+		}
+
+		bool OnFilterRow(int row) 
+		{
+			if (filter != null)
+				return filter (row);
+			return false;
+		}
+
+		ListViewFilterFunc filter;
+		public ListViewFilterFunc Filter {
+			get {
+				return filter;
+			}
+			set {
+				filter = value;
+				Backend.SetFilterFunct (value);
+			}
+		}
+
+		public void Refilter()
+		{
+			Backend.Refilter ();
 		}
 	}
 }

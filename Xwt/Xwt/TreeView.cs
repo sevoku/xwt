@@ -74,6 +74,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
 			}
+
+			public bool OnFilterRow (TreePosition position)
+			{
+				return Parent.OnFilterRow (position);
+			}
 		}
 		
 		static TreeView ()
@@ -514,6 +519,29 @@ namespace Xwt
 				rowExpanded -= value;
 				BackendHost.OnAfterEventRemove (TreeViewEvent.RowExpanded, rowExpanded);
 			}
+		}
+
+		bool OnFilterRow(TreePosition position) 
+		{
+			if (filter != null)
+				return filter (position);
+			return false;
+		}
+
+		TreeViewFilterFunc filter;
+		public TreeViewFilterFunc Filter {
+			get {
+				return filter;
+			}
+			set {
+				filter = value;
+				Backend.SetFilterFunct (value);
+			}
+		}
+
+		public void Refilter()
+		{
+			Backend.Refilter ();
 		}
 	}
 	

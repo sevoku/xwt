@@ -62,6 +62,11 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
+
+			public bool OnFilterRow (int row)
+			{
+				return ((ListBox)Parent).OnFilterRow (row);
+			}
 		}
 		
 		static ListBox ()
@@ -332,6 +337,29 @@ namespace Xwt
 				rowActivated -= value;
 				BackendHost.OnAfterEventRemove (ListViewEvent.RowActivated, rowActivated);
 			}
+		}
+
+		bool OnFilterRow(int row) 
+		{
+			if (filter != null)
+				return filter (row);
+			return false;
+		}
+
+		ListViewFilterFunc filter;
+		public ListViewFilterFunc Filter {
+			get {
+				return filter;
+			}
+			set {
+				filter = value;
+				Backend.SetFilterFunct (value);
+			}
+		}
+
+		public void Refilter()
+		{
+			Backend.Refilter ();
 		}
 	}
 }

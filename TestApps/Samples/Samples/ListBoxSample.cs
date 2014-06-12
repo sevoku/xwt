@@ -36,6 +36,12 @@ namespace Samples
 		
 		public ListBoxSample ()
 		{
+			var filterBox = new HBox ();
+			var txtFilter = new TextEntry ();
+			filterBox.PackStart (new Label ("Filter:"));
+			filterBox.PackStart (txtFilter, true);
+			PackStart (filterBox);
+
 			// Default list box
 			
 			ListBox list = new ListBox ();
@@ -61,6 +67,22 @@ namespace Samples
 				store.SetValue (r, name, "Value " + n);
 			}
 			PackStart (customList, true);
+
+			txtFilter.Changed += (sender, e) => {
+				if (String.IsNullOrEmpty (txtFilter.Text))
+					list.Filter = null;
+				else {
+					if (list.Filter == null)
+						list.Filter = row => {
+						if (String.IsNullOrEmpty (txtFilter.Text))
+							return true;
+						if (store.GetValue (row, name).Contains (txtFilter.Text))
+							return true;
+						return false;
+					};
+					list.Refilter();
+				}
+			};
 		}	
 	}
 }
