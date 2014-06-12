@@ -67,9 +67,10 @@ namespace Xwt.GtkBackend
 			ListStoreBackend b = sourceBackend as ListStoreBackend;
 			if (b == null) {
 				CustomListModel model = new CustomListModel (source, Widget);
-				Widget.Model = model.Store;
-			} else
-				Widget.Model = b.Store;
+				SetModel(model.Store);
+			} else {
+				SetModel(b.Store);
+			}
 		}
 
 		public void SelectRow (int row)
@@ -154,6 +155,40 @@ namespace Xwt.GtkBackend
 			col.CellGetSize (rect, out x, out y, out w, out h);
 
 			return new Rectangle (x, y, w, h);
+		}
+
+		public void SetFilterFunct (ListViewFilterFunc filter)
+		{
+			if (filter != null) {
+				EnableFilter = true;
+				if (Widget.Model == null)
+					return;
+
+				var model = Widget.Model as Gtk.TreeModelFilter;
+
+				if (model == null) {
+					model = new Gtk.TreeModelFilter (Widget.Model, null);
+				}
+				model.VisibleFunc = OnFilterRow;
+				Widget.Model = model;
+				model.Refilter ();
+			} else {
+				var model = Widget.Model as Gtk.TreeModelFilter;
+				if (model != null) {
+					Widget.Model = model.ChildModel;
+					model.Dispose ();
+				}
+			}
+		}
+
+		bool OnFilterRow (Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			var path = model.GetPath (iter);
+			if (path.Indices.Length == 0)
+				return true;
+			int row = path.Indices [0];
+
+			return EventSink.OnFilterRow (row);
 		}
 	}
 }

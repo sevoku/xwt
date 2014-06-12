@@ -162,9 +162,9 @@ namespace Xwt.GtkBackend
 			TreeStoreBackend b = sourceBackend as TreeStoreBackend;
 			if (b == null) {
 				CustomTreeModel model = new CustomTreeModel (source);
-				Widget.Model = model.Store;
+				SetModel (model.Store);
 			} else
-				Widget.Model = b.Store;
+				SetModel (b.Store);
 		}
 
 		public TreePosition[] SelectedRows {
@@ -269,6 +269,37 @@ namespace Xwt.GtkBackend
 			}
 
 			CurrentEventRow = toggledItem;
+		}
+
+		public void SetFilterFunct (TreeViewFilterFunc filter)
+		{
+			if (filter != null) {
+				EnableFilter = true;
+				if (Widget.Model == null)
+					return;
+
+				var model = Widget.Model as Gtk.TreeModelFilter;
+
+				if (model == null) {
+					model = new Gtk.TreeModelFilter (Widget.Model, null);
+				}
+				model.VisibleFunc = OnFilterRow;
+				Widget.Model = model;
+				model.Refilter ();
+			} else {
+				var model = Widget.Model as Gtk.TreeModelFilter;
+				if (model != null) {
+					Widget.Model = model.ChildModel;
+					model.Dispose ();
+				}
+			}
+		}
+
+		bool OnFilterRow (Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			Gtk.TreeIter it;
+			model.GetIter (out it, model.GetPath (iter));
+			return EventSink.OnFilterRow (new IterPos (-1, it));
 		}
 	}
 }

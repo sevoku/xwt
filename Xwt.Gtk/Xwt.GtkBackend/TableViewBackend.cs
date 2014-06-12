@@ -205,6 +205,24 @@ namespace Xwt.GtkBackend
 			return cellViews [cell].Column;
 		}
 
+		protected bool EnableFilter { get; set; }
+		protected void SetModel (Gtk.TreeModel model)
+		{
+			if (EnableFilter) {
+				Widget.Model = new Gtk.TreeModelFilter (model, null);
+				((Gtk.TreeModelFilter)model).Refilter ();
+			} else
+				Widget.Model = model;
+		}
+
+		public void Refilter ()
+		{
+			var filterModel = Widget.Model as Gtk.TreeModelFilter;
+			if (EnableFilter && filterModel != null) {
+				filterModel.Refilter ();
+			}
+		}
+
 		#region ICellRendererTarget implementation
 		public void PackStart (object target, Gtk.CellRenderer cr, bool expand)
 		{
