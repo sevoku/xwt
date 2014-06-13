@@ -99,6 +99,16 @@ namespace Xwt.Mac
 		{
 			return Rectangle.Zero;
 		}
+
+		public void SetFilterFunct (ListViewFilterFunc filter)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Refilter ()
+		{
+			throw new NotImplementedException ();
+		}
 	}
 	
 	class TableRow: NSObject, ITablePosition

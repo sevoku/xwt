@@ -196,6 +196,16 @@ namespace Xwt.Mac
 				Tree.SetDropItem (item, 0);
 			}
 		}*/
+
+		public void SetFilterFunct (TreeViewFilterFunc filter)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void Refilter ()
+		{
+			throw new NotImplementedException ();
+		}
 	}
 	
 	class TreeItem: NSObject, ITablePosition
