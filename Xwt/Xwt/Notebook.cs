@@ -96,7 +96,7 @@ namespace Xwt
 		{
 			NotebookTab t = new NotebookTab ((WidgetBackendHost)BackendHost, w);
 			t.Label = label;
-			t.Image = image.ImageDescription;
+			t.Image = image.GetImageDescription(BackendHost.ToolkitEngine);
 			tabs.Add (t);
 		}
 
