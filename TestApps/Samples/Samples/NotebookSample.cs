@@ -14,7 +14,7 @@ namespace Samples
 			Notebook nb1 = new Notebook ();
 			nb1.Add (new Label ("First tab content"), "First Tab", StockIcons.Information);
 			nb1.Add (new MyWidget (), "Second Tab");
-			nb1.Add (new Label ("Third Tab content"), "Third Tab", StockIcons.Warning);
+			nb1.Add (new MyTestWidget(), "Third Tab", StockIcons.Warning);
 			nb1.TabOrientation = NotebookTabOrientation.Left;
 
 
@@ -77,7 +77,43 @@ namespace Samples
 			PackEnd (buttons);
 		}
 	}
-	
+
+	class MyTestWidget : VBox
+	{
+		public MyTestWidget()
+		{
+			PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" });
+			PackStart(new Label("Scrollable Test:"));
+
+			VBox ContentData = new VBox()
+			{
+				ExpandHorizontal = true,
+				ExpandVertical = true
+			};
+
+			ScrollView ContentScroll = new ScrollView()
+			{
+				Content = ContentData,
+				ExpandHorizontal = true,
+				ExpandVertical = true
+			};
+			PackStart(ContentScroll, true, true);
+
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new TextEntry(), true, true);
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new TextEntry(), true, true);
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new MyWidget (), true, true);
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new TextEntry(), true, true);
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new TextEntry(), true, true);
+			ContentData.PackStart(new TextEntry() { PlaceholderText = "Placeholder Test" }, true, true);
+			ContentData.PackStart(new TextEntry(), true, true);
+		}
+	}
+
 	class MyWidget: Canvas
 	{
 		public MyWidget()

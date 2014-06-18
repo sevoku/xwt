@@ -39,18 +39,22 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, ITextEntryBackend
 	{
 		bool multiline;
+		string placeholderText;
 
 		PlaceholderTextAdorner Adorner {
 			get; set;
 		}
+
 		public TextEntryBackend()
 		{
 			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
-			Adorner = new PlaceholderTextAdorner (TextBox);
 			TextBox.Loaded += delegate {
+				Adorner = new PlaceholderTextAdorner (TextBox);
 				var layer = AdornerLayer.GetAdornerLayer (TextBox);
 				if (layer != null)
 					layer.Add (Adorner);
+				if (!String.IsNullOrEmpty(placeholderText))
+					Adorner.PlaceholderText = placeholderText;
 			};
 			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
 		}
@@ -72,10 +76,15 @@ namespace Xwt.WPFBackend
 			set { TextBox.TextAlignment = DataConverter.ToTextAlignment (value); }
 		}
 
-		public string PlaceholderText
-		{
-			get { return Adorner.PlaceholderText; }
-			set { Adorner.PlaceholderText = value; }
+		public string PlaceholderText {
+			get {
+				return placeholderText;
+			}
+			set {
+				placeholderText = value;
+				if (Adorner != null)
+					Adorner.PlaceholderText = value;
+			}
 		}
 
 		public bool ReadOnly
