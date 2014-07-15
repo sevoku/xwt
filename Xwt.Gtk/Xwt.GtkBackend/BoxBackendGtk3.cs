@@ -80,7 +80,7 @@ namespace Xwt.GtkBackend
 			if (IsReallocating)
 				force_width = SizeConstraint.WithSize (Allocation.Width);
 			var size = OnGetRequisition (force_width, SizeConstraint.Unconstrained);
-			if (size.Height < HeightRequest)
+			if (HeightRequest > 0)
 				minimum_height = natural_height = HeightRequest;
 			else
 				minimum_height = natural_height = size.Height;
@@ -94,7 +94,7 @@ namespace Xwt.GtkBackend
 			if (IsReallocating)
 				force_height = SizeConstraint.WithSize (Allocation.Width);
 			var size = OnGetRequisition (SizeConstraint.Unconstrained, force_height);
-			if (size.Height < WidthRequest)
+			if (WidthRequest > 0)
 				minimum_width = natural_width = WidthRequest;
 			else
 				minimum_width = natural_width = size.Width;
@@ -103,7 +103,7 @@ namespace Xwt.GtkBackend
 		protected override void OnGetPreferredHeightForWidth (int width, out int minimum_height, out int natural_height)
 		{
 			var size = OnGetRequisition (SizeConstraint.WithSize (width), SizeConstraint.Unconstrained);
-			if (size.Height < HeightRequest)
+			if (HeightRequest > 0)
 				minimum_height = natural_height = HeightRequest;
 			else
 				minimum_height = natural_height = size.Height;
@@ -112,7 +112,7 @@ namespace Xwt.GtkBackend
 		protected override void OnGetPreferredWidthForHeight (int height, out int minimum_width, out int natural_width)
 		{
 			var size = OnGetRequisition (SizeConstraint.Unconstrained, SizeConstraint.WithSize (height));
-			if (size.Height < WidthRequest)
+			if (WidthRequest > 0)
 				minimum_width = natural_width = WidthRequest;
 			else
 				minimum_width = natural_width = size.Width;
