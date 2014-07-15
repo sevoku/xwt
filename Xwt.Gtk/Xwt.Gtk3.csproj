@@ -162,6 +162,7 @@
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
