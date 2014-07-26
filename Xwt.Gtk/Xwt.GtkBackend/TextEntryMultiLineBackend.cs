@@ -38,9 +38,8 @@ namespace Xwt.GtkBackend
 	{
 		string placeholderText;
 		Pango.Layout layout = null;
-		bool multiLine = false;
-		bool showFrame = true;
-		int frameMargin = 4;
+		Gtk.TextView textView;
+		bool multiLine;
 
 		public string Text {
 			get { return TextView.Buffer.Text; }
@@ -79,47 +78,17 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool ShowFrame {
-			get { return showFrame; }
+			get { return ((Gtk.Frame)Widget).ShadowType != Gtk.ShadowType.None; }
 			set {
-				showFrame = value;
-				frameMargin = value ? 4 : 0;
-				TextView.PixelsAboveLines = frameMargin;
-				TextView.PixelsBelowLines = frameMargin;
-				TextView.RightMargin = frameMargin;
-				TextView.LeftMargin = value ? frameMargin : 1;
-
+				if (value)
+					((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
+				else
+					((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.None;
 			}
 		}
 
 		protected virtual Gtk.TextView TextView {
-			get { return (Gtk.TextView)base.Widget; }
-		}
-
-		protected new Gtk.TextView Widget {
-			get { return TextView; }
-			set { base.Widget = value; }
-		}
-
-		protected virtual void RenderFrame (object o, Gtk.ExposeEventArgs args)
-		{
-
-			var w = TextView.GetWindow (Gtk.TextWindowType.Text);
-			if (ShowFrame && args.Event.Window == w) {
-				int wh, ww;
-				w.GetSize (out ww, out wh);
-
-				//Application.Invoke (() => {
-				using (var gc = new Gdk.GC (w)) {
-					w.DrawLines (gc, new Gdk.Point[] {
-						new Gdk.Point (0, 0),
-						new Gdk.Point (--ww, 0),
-						new Gdk.Point (ww, --wh),
-						new Gdk.Point (0, wh),
-						new Gdk.Point (0, 0),
-					});
-				}
-				//});
-			}
+			get { return textView; }
 		}
 
 		public string PlaceholderText {
@@ -127,9 +96,9 @@ namespace Xwt.GtkBackend
 			set {
 				if (placeholderText != value) {
 					if (placeholderText == null)
-						Widget.ExposeEvent += RenderPlaceholderText;
+						TextView.ExposeEvent += RenderPlaceholderText;
 					else if (value == null)
-						Widget.ExposeEvent -= RenderPlaceholderText;
+						TextView.ExposeEvent -= RenderPlaceholderText;
 				}
 				placeholderText = value;
 			}
@@ -151,6 +120,7 @@ namespace Xwt.GtkBackend
 			get { return base.Font; }
 			set {
 				base.Font = value;
+				TextView.ModifyFont ((Pango.FontDescription)value);
 				xLayout = null;
 				layout = null;
 			}
@@ -158,14 +128,13 @@ namespace Xwt.GtkBackend
 
 		public override void Initialize ()
 		{
-			Widget = new Gtk.TextView ();
-			Widget.Show ();
-
+			textView = new Gtk.TextView ();
+			Widget = new Gtk.Frame ();
+			((Gtk.Frame)Widget).Add (textView);
+			((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
+			Widget.ShowAll ();
 			ShowFrame = true;
-			TextView.ExposeEvent += RenderFrame;
-
 			InitializeMultiLine ();
-
 		}
 
 		#region Multiline-Handling
@@ -195,7 +164,6 @@ namespace Xwt.GtkBackend
 				if (!MultiLine && lastHeight != e.Allocation.Height) {
 					lastHeight = e.Allocation.Height;
 					XLayout.GetPixelSize (out w, out lineHeight);
-					lineHeight += frameMargin * 2;
 					if (lastHeight > lineHeight)
 						TextView.PixelsAboveLines = (int)((lastHeight - lineHeight) / 2d);
 				}
@@ -325,14 +293,14 @@ namespace Xwt.GtkBackend
 					TextView.Buffer.Changed += HandleChanged;
 					break;
 				case TextEntryEvent.Activated:
-					Widget.KeyPressEvent += HandleActivated;
+						TextView.KeyPressEvent += HandleActivated;
 					break;
 				case TextEntryEvent.SelectionChanged:
 					enableSelectionChangedEvent = true;
-					Widget.MoveCursor += HandleMoveCursor;
-					Widget.ButtonPressEvent += HandleButtonPressEvent;
-					Widget.ButtonReleaseEvent += HandleButtonReleaseEvent;
-					Widget.MotionNotifyEvent += HandleMotionNotifyEvent;
+						TextView.MoveCursor += HandleMoveCursor;
+						TextView.ButtonPressEvent += HandleButtonPressEvent;
+						TextView.ButtonReleaseEvent += HandleButtonReleaseEvent;
+						TextView.MotionNotifyEvent += HandleMotionNotifyEvent;
 					break;
 				}
 			}
@@ -347,14 +315,14 @@ namespace Xwt.GtkBackend
 					TextView.Buffer.Changed -= HandleChanged;
 					break;
 				case TextEntryEvent.Activated:
-					Widget.KeyPressEvent -= HandleActivated;
+						TextView.KeyPressEvent -= HandleActivated;
 					break;
 				case TextEntryEvent.SelectionChanged:
 					enableSelectionChangedEvent = false;
-					Widget.MoveCursor -= HandleMoveCursor;
-					Widget.ButtonPressEvent -= HandleButtonPressEvent;
-					Widget.ButtonReleaseEvent -= HandleButtonReleaseEvent;
-					Widget.MotionNotifyEvent -= HandleMotionNotifyEvent;
+						TextView.MoveCursor -= HandleMoveCursor;
+						TextView.ButtonPressEvent -= HandleButtonPressEvent;
+						TextView.ButtonReleaseEvent -= HandleButtonReleaseEvent;
+						TextView.MotionNotifyEvent -= HandleMotionNotifyEvent;
 					break;
 				}
 			}
