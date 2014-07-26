@@ -213,7 +213,7 @@ namespace Xwt.GtkBackend
 						TextView.Buffer.Changed += HandleChanged;
 						break;
 					case TextEntryEvent.Activated:
-						TextView.KeyPressEvent += HandleActivated;
+						TextView.KeyPressEvent += HandleKeyPress;
 						break;
 					case TextEntryEvent.SelectionChanged:
 						enableSelectionChangedEvent = true;
@@ -235,7 +235,7 @@ namespace Xwt.GtkBackend
 						TextView.Buffer.Changed -= HandleChanged;
 						break;
 					case TextEntryEvent.Activated:
-						TextView.KeyPressEvent -= HandleActivated;
+						TextView.KeyPressEvent -= HandleKeyPress;
 						break;
 					case TextEntryEvent.SelectionChanged:
 						enableSelectionChangedEvent = false;
@@ -256,9 +256,12 @@ namespace Xwt.GtkBackend
 			});
 		}
 
-		void HandleActivated (object sender, Gtk.KeyPressEventArgs e)
+		[GLib.ConnectBefore]
+		void HandleKeyPress (object sender, Gtk.KeyPressEventArgs e)
 		{
-			if ((e.Event.Key == Gdk.Key.Return || e.Event.Key == Gdk.Key.ISO_Enter) && !MultiLine)
+			if ((e.Event.Key == Gdk.Key.Return ||
+			     e.Event.Key == Gdk.Key.ISO_Enter ||
+			     e.Event.Key == Gdk.Key.KP_Enter) && !MultiLine)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnActivated ();
 				});
@@ -374,7 +377,9 @@ namespace Xwt.GtkBackend
 
 		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
 		{
-			if ((evnt.Key == Gdk.Key.Return || evnt.Key == Gdk.Key.ISO_Enter) && !MultiLine)
+			if ((evnt.Key == Gdk.Key.Return ||
+			     evnt.Key == Gdk.Key.ISO_Enter ||
+			     evnt.Key == Gdk.Key.KP_Enter) && !MultiLine)
 				return true;
 			return base.OnKeyPressEvent (evnt);
 		}
