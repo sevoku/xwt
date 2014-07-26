@@ -110,10 +110,7 @@ namespace Xwt.GtkBackend
 
 		protected virtual void RenderPlaceholderText (object o, Gtk.ExposeEventArgs args)
 		{
-			var w = TextView.GetWindow (Gtk.TextWindowType.Text);
-			if (!string.IsNullOrEmpty (PlaceholderText) && string.IsNullOrEmpty (Text) && args.Event.Window == w) {
-				Util.RenderPlaceholderText (TextView, args, PlaceholderText, ref layout);
-			}
+			TextView.RenderPlaceholderText (args, PlaceholderText, ref layout);
 		}
 
 		public override object Font {
