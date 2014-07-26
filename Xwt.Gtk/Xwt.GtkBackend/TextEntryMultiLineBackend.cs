@@ -414,6 +414,13 @@ namespace Xwt.GtkBackend
 			base.OnSizeAllocated (allocation);
 		}
 
+		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+		{
+			if ((evnt.Key == Gdk.Key.Return || evnt.Key == Gdk.Key.ISO_Enter) && !MultiLine)
+				return true;
+			return base.OnKeyPressEvent (evnt);
+		}
+
 		public override void Dispose ()
 		{
 			if (xLayout != null)
