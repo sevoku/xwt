@@ -43,10 +43,7 @@ namespace Xwt.GtkBackend
 
 		public string Text {
 			get { return TextView.Buffer.Text; }
-			set {
-				bufferSizeRequest = true;
-				TextView.Buffer.Text = value;
-			}
+			set { TextView.Buffer.Text = value; }
 		}
 
 		public Alignment TextAlignment {
@@ -120,34 +117,7 @@ namespace Xwt.GtkBackend
 			((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
 			Widget.ShowAll ();
 			ShowFrame = true;
-			InitializeMultiLine ();
 		}
-
-		#region Multiline-Handling
-
-		bool bufferSizeRequest = false;
-
-		protected virtual void InitializeMultiLine ()
-		{
-			TextView.Buffer.Changed += (s, e) => {
-				bufferSizeRequest = true;
-			};
-		}
-
-		public override Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
-		{
-			if (MultiLine)
-				return base.GetPreferredSize (widthConstraint, heightConstraint);
-
-			if (bufferSizeRequest) {
-				bufferSizeRequest = !widthConstraint.IsConstrained;
-				return new Size (Widget.Allocation.Width, Widget.Allocation.Height);
-			}
-
-			return base.GetPreferredSize (widthConstraint, heightConstraint);
-		}
-
-		#endregion
 
 		#region Cursor and Selection
 
@@ -391,11 +361,9 @@ namespace Xwt.GtkBackend
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			base.OnSizeRequested (ref requisition);
+			requisition.Width = 150; // mimic Gtk.Entry, which has a min width
 			if (!MultiLine)
-				requisition = new Gtk.Requisition {
-				Width = -1,
-				Height = lineHeight
-			};
+				requisition.Height = lineHeight;
 		}
 
 		protected Pango.Layout XLayout {
