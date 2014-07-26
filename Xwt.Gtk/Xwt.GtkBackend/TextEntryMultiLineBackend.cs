@@ -3,6 +3,7 @@
 //
 // Author:
 //       Lytico (http://www.limada.org)
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 http://www.limada.org
 //
@@ -38,8 +39,7 @@ namespace Xwt.GtkBackend
 	{
 		string placeholderText;
 		Pango.Layout layout = null;
-		Gtk.TextView textView;
-		bool multiLine;
+		GtkMultilineTextEntry textView;
 
 		public string Text {
 			get { return TextView.Buffer.Text; }
@@ -63,18 +63,8 @@ namespace Xwt.GtkBackend
 		}
 
 		public bool MultiLine {
-			get { return multiLine; }
-			set {
-				if (value != multiLine) {
-					multiLine = value;
-					if (!value) {
-						TextView.WrapMode = Gtk.WrapMode.None;
-					} else {
-						TextView.WrapMode = Gtk.WrapMode.Word;
-					}
-
-				}
-			}
+			get { return TextView.MultiLine; }
+			set { TextView.MultiLine = value; }
 		}
 
 		public bool ShowFrame {
@@ -87,7 +77,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		protected virtual Gtk.TextView TextView {
+		protected virtual GtkMultilineTextEntry TextView {
 			get { return textView; }
 		}
 
@@ -118,14 +108,13 @@ namespace Xwt.GtkBackend
 			set {
 				base.Font = value;
 				TextView.ModifyFont ((Pango.FontDescription)value);
-				xLayout = null;
 				layout = null;
 			}
 		}
 
 		public override void Initialize ()
 		{
-			textView = new Gtk.TextView ();
+			textView = new GtkMultilineTextEntry ();
 			Widget = new Gtk.Frame ();
 			((Gtk.Frame)Widget).Add (textView);
 			((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
@@ -137,35 +126,9 @@ namespace Xwt.GtkBackend
 		#region Multiline-Handling
 
 		bool bufferSizeRequest = false;
-		int lineHeight = -1;
-		Pango.Layout xLayout = null;
-
-		protected Pango.Layout XLayout {
-			get { return xLayout ?? (xLayout = TextView.CreatePangoLayout ("X")); }
-		}
 
 		protected virtual void InitializeMultiLine ()
 		{
-			var w = 0;
-			var lastHeight = -1;
-
-			TextView.SizeRequested += (s, args) => {
-				if (!MultiLine)
-					args.Requisition = new Gtk.Requisition {
-						Width = -1,
-						Height = lineHeight
-					};
-			};
-
-			TextView.SizeAllocated += (s, e) => {
-				if (!MultiLine && lastHeight != e.Allocation.Height) {
-					lastHeight = e.Allocation.Height;
-					XLayout.GetPixelSize (out w, out lineHeight);
-					if (lastHeight > lineHeight)
-						TextView.PixelsAboveLines = (int)((lastHeight - lineHeight) / 2d);
-				}
-			};
-
 			TextView.Buffer.Changed += (s, e) => {
 				bufferSizeRequest = true;
 			};
@@ -394,15 +357,69 @@ namespace Xwt.GtkBackend
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {
-				if (xLayout != null)
-					xLayout.Dispose ();
-				xLayout = null;
-
 				if (layout != null)
 					layout.Dispose ();
 				layout = null;
 			}
 			base.Dispose (disposing);
+		}
+	}
+
+	public class GtkMultilineTextEntry : Gtk.TextView
+	{
+		bool multiline;
+		int lastHeight = -1;
+		int lineHeight = -1;
+		Pango.Layout xLayout;
+
+		public bool MultiLine {
+			get {
+				return multiline;
+			}
+			set {
+				if (multiline != value) {
+					multiline = value;
+					if (!value) {
+						WrapMode = Gtk.WrapMode.None;
+					} else {
+						WrapMode = Gtk.WrapMode.Word;
+					}
+				}
+			}
+		}
+
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			base.OnSizeRequested (ref requisition);
+			if (!MultiLine)
+				requisition = new Gtk.Requisition {
+				Width = -1,
+				Height = lineHeight
+			};
+		}
+
+		protected Pango.Layout XLayout {
+			get { return xLayout ?? (xLayout = CreatePangoLayout ("X")); }
+		}
+
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
+			int width;
+			if (!MultiLine && lastHeight != allocation.Height) {
+				lastHeight = allocation.Height;
+				XLayout.GetPixelSize (out width, out lineHeight);
+				if (lastHeight > lineHeight)
+					PixelsAboveLines = (int)((lastHeight - lineHeight) / 2d);
+			}
+			base.OnSizeAllocated (allocation);
+		}
+
+		public override void Dispose ()
+		{
+			if (xLayout != null)
+				xLayout.Dispose ();
+			xLayout = null;
+			base.Dispose ();
 		}
 	}
 }
