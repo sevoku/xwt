@@ -298,7 +298,7 @@ namespace Xwt.GtkBackend
 
 		void HandleActivated (object sender, Gtk.KeyPressEventArgs e)
 		{
-			if (e.Event.Key == Gdk.Key.Return || e.Event.Key == Gdk.Key.ISO_Enter)
+			if ((e.Event.Key == Gdk.Key.Return || e.Event.Key == Gdk.Key.ISO_Enter) && !MultiLine)
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnActivated ();
 				});
