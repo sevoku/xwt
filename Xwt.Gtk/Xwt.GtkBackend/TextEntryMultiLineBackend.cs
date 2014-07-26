@@ -27,7 +27,6 @@
 
 using System;
 using Xwt.Backends;
-using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -38,7 +37,7 @@ namespace Xwt.GtkBackend
 	public class TextEntryMultiLineBackend : WidgetBackend, ITextEntryBackend
 	{
 		string placeholderText;
-		Pango.Layout layout = null;
+		Pango.Layout layout;
 		GtkMultilineTextEntry textView;
 
 		public string Text {
@@ -114,9 +113,8 @@ namespace Xwt.GtkBackend
 			textView = new GtkMultilineTextEntry ();
 			Widget = new Gtk.Frame ();
 			((Gtk.Frame)Widget).Add (textView);
-			((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.In;
-			Widget.ShowAll ();
 			ShowFrame = true;
+			Widget.ShowAll ();
 		}
 
 		#region Cursor and Selection
@@ -134,15 +132,12 @@ namespace Xwt.GtkBackend
 
 		public int SelectionStart {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				TextView.Buffer.GetSelectionBounds (out start, out end);
 				return start.Offset;
-
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				TextView.Buffer.GetSelectionBounds (out start, out end);
 				var cacheLength = end.Offset - start.Offset;
 				start.Offset = value;
@@ -155,16 +150,14 @@ namespace Xwt.GtkBackend
 
 		public int SelectionLength {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end))
 					return 0;
 				return end.Offset - start.Offset;
 
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end)) {
 					start = TextView.Buffer.GetIterAtMark (TextView.Buffer.InsertMark);
 					end = start;
@@ -178,17 +171,14 @@ namespace Xwt.GtkBackend
 
 		public string SelectedText {
 			get {
-				var start = new Gtk.TextIter ();
-				var end = start;
-
+				Gtk.TextIter start, end;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end))
-					return "";
+					return String.Empty;
 				return TextView.Buffer.GetText (start, end, true);
 			}
 			set {
-				var start = new Gtk.TextIter ();
-				var end = start;
-				var cachedOffset = 0;
+				Gtk.TextIter start, end;
+				int cachedOffset;
 				if (!TextView.Buffer.GetSelectionBounds (out start, out end)) {
 					start = TextView.Buffer.GetIterAtMark (TextView.Buffer.InsertMark);
 					cachedOffset = start.Offset;
@@ -219,19 +209,19 @@ namespace Xwt.GtkBackend
 			base.EnableEvent (eventId);
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					TextView.Buffer.Changed += HandleChanged;
-					break;
-				case TextEntryEvent.Activated:
+					case TextEntryEvent.Changed:
+						TextView.Buffer.Changed += HandleChanged;
+						break;
+					case TextEntryEvent.Activated:
 						TextView.KeyPressEvent += HandleActivated;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					enableSelectionChangedEvent = true;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						enableSelectionChangedEvent = true;
 						TextView.MoveCursor += HandleMoveCursor;
 						TextView.ButtonPressEvent += HandleButtonPressEvent;
 						TextView.ButtonReleaseEvent += HandleButtonReleaseEvent;
 						TextView.MotionNotifyEvent += HandleMotionNotifyEvent;
-					break;
+						break;
 				}
 			}
 		}
@@ -241,19 +231,19 @@ namespace Xwt.GtkBackend
 			base.DisableEvent (eventId);
 			if (eventId is TextEntryEvent) {
 				switch ((TextEntryEvent)eventId) {
-				case TextEntryEvent.Changed:
-					TextView.Buffer.Changed -= HandleChanged;
-					break;
-				case TextEntryEvent.Activated:
+					case TextEntryEvent.Changed:
+						TextView.Buffer.Changed -= HandleChanged;
+						break;
+					case TextEntryEvent.Activated:
 						TextView.KeyPressEvent -= HandleActivated;
-					break;
-				case TextEntryEvent.SelectionChanged:
-					enableSelectionChangedEvent = false;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						enableSelectionChangedEvent = false;
 						TextView.MoveCursor -= HandleMoveCursor;
 						TextView.ButtonPressEvent -= HandleButtonPressEvent;
 						TextView.ButtonReleaseEvent -= HandleButtonReleaseEvent;
 						TextView.MotionNotifyEvent -= HandleMotionNotifyEvent;
-					break;
+						break;
 				}
 			}
 		}
