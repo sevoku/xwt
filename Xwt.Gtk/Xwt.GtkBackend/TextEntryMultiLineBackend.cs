@@ -344,11 +344,25 @@ namespace Xwt.GtkBackend
 					multiline = value;
 					if (!value) {
 						WrapMode = Gtk.WrapMode.None;
+						PixelsAboveLines = 3;
+						PixelsBelowLines = 3;
 					} else {
 						WrapMode = Gtk.WrapMode.Word;
+						PixelsAboveLines = 0;
+						PixelsBelowLines = 0;
 					}
 				}
 			}
+		}
+
+		public GtkMultilineTextEntry()
+		{
+			Indent = 3;
+			PixelsAboveLines = 3;
+			PixelsBelowLines = 3;
+			int w;
+			XLayout.GetPixelSize (out w, out lineHeight);
+			lineHeight += 6;
 		}
 
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
@@ -369,8 +383,7 @@ namespace Xwt.GtkBackend
 			if (!MultiLine && lastHeight != allocation.Height) {
 				lastHeight = allocation.Height;
 				XLayout.GetPixelSize (out width, out lineHeight);
-				if (lastHeight > lineHeight)
-					PixelsAboveLines = (int)((lastHeight - lineHeight) / 2d);
+				lineHeight += 6;
 			}
 			base.OnSizeAllocated (allocation);
 		}
