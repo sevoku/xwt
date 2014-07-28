@@ -164,6 +164,8 @@
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3PopoverWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
