@@ -76,6 +76,7 @@ namespace Samples
 			PackStart (new Label ("Entry with small font"));
 			TextEntry te2 = new TextEntry ();
 			te2.Font = te2.Font.WithScaledSize (0.5);
+			te2.PlaceholderText = "Placeholder text";
 			PackStart (te2);
 
 			PackStart (new TextEntry { Text = "Entry with custom height", MinHeight = 50 });
@@ -102,6 +103,7 @@ namespace Samples
 			TextEntry te5 = new TextEntry ();
 			te5.Text = "I should be centered!";
 			te5.TextAlignment = Alignment.Center;
+			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
 			TextEntry te6 = new TextEntry ();
@@ -121,6 +123,33 @@ namespace Samples
 			} catch (InvalidOperationException ex) {
 				Console.WriteLine (ex);
 			}
+
+			HBox hbox1 = new HBox ();
+
+			TextArea te9 = new TextArea ();
+			te9.Text = "I should have" + Environment.NewLine + "multiple lines and be centered!";
+			te9.PlaceholderText = "Placeholder text";
+			te9.TextAlignment = Alignment.Center;
+			te9.MinHeight = 40;
+			te9.Activated += (sender, e) => MessageDialog.ShowMessage ("Activated");
+			hbox1.PackStart (te9, true);
+
+			TextArea te10 = new TextArea ();
+			te10.Text = "I should have multiple lines," + Environment.NewLine + "no frame and should wrap on words!";
+			te10.PlaceholderText = "Placeholder text";
+			te10.ShowFrame = false;
+			te10.Wrap = WrapMode.Word;
+			hbox1.PackStart (te10, true);
+
+			PackStart (hbox1);
+
+			TextArea te11 = new TextArea ();
+			te11.Text = "I should have\nmultiple lines,\nwrap on words,\n and scroll\nvertically ";
+			te11.PlaceholderText = "Placeholder text";
+			te11.Wrap = WrapMode.Word;
+			var scrollte11 = new ScrollView (te11);
+			scrollte11.HorizontalScrollPolicy = ScrollPolicy.Never;
+			PackStart (scrollte11);
 		}
 	}
 }

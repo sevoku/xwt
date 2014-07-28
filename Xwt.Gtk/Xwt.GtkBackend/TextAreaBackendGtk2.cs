@@ -1,5 +1,5 @@
-//
-// PasswordEntryBackendGtk2.cs
+﻿//
+// TextAreaBackendGtk2.cs
 //
 // Author:
 //       Vsevolod Kukol <v.kukol@rubologic.de>
@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.GtkBackend
 {
-	public partial class PasswordEntryBackend
+	public partial class TextAreaBackend
 	{
 		string placeHolderText;
 		Pango.Layout layout;
@@ -37,9 +37,9 @@ namespace Xwt.GtkBackend
 			set {
 				if (placeHolderText != value) {
 					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
+						TextView.ExposeEvent += HandleWidgetExposeEvent;
 					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
+						TextView.ExposeEvent -= HandleWidgetExposeEvent;
 				}
 				placeHolderText = value;
 			}
@@ -47,7 +47,7 @@ namespace Xwt.GtkBackend
 
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			Widget.RenderPlaceholderText (args, placeHolderText, ref layout);
+			TextView.RenderPlaceholderText (args, placeHolderText, ref layout);
 		}
 
 		protected override void Dispose (bool disposing)

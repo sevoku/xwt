@@ -38,6 +38,11 @@ namespace Xwt.GtkBackend
 			rgba.Alpha = color.Alpha;
 			return rgba;
 		}
+
+		public static Xwt.Drawing.Color ToXwtValue (this Gdk.RGBA rgba)
+		{
+			return new Xwt.Drawing.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha);
+		}
 		#endif
 
 		public static Pango.EllipsizeMode ToGtkValue (this EllipsizeMode value)
@@ -170,6 +175,36 @@ namespace Xwt.GtkBackend
 					return GridLines.None;
 			}
 			throw new InvalidOperationException("Invalid TreeViewGridLines value: " + value);
+		}
+
+		public static Gtk.Justification ToGtkJustification (this Alignment value)
+		{
+			switch (value) {
+				case Alignment.Start: return Gtk.Justification.Left;
+				case Alignment.Center: return Gtk.Justification.Center;
+				case Alignment.End: return Gtk.Justification.Right;
+			}
+			throw new InvalidOperationException("Invalid Alignment value: " + value);
+		}
+
+		public static float ToGtkAlignment (this Alignment value)
+		{
+			switch (value) {
+				case Alignment.Start: return 0.0f;
+				case Alignment.Center: return 0.5f;
+				case Alignment.End: return 1.0f;
+			}
+			throw new InvalidOperationException("Invalid Alignment value: " + value);
+		}
+
+		public static Alignment ToXwtValue (this Gtk.Justification value)
+		{
+			switch (value) {
+				case Gtk.Justification.Left: return Alignment.Start;
+				case Gtk.Justification.Center: return Alignment.Center;
+				case Gtk.Justification.Right: return Alignment.End;
+			}
+			return Alignment.Start; // return Start for unknown and Fill
 		}
 	}
 }

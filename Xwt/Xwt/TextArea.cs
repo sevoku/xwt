@@ -1,8 +1,8 @@
-//
-// PasswordEntryBackendGtk2.cs
+﻿//
+// TextBox.cs
 //
 // Author:
-//       Vsevolod Kukol <v.kukol@rubologic.de>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Vsevolod Kukol
 //
@@ -24,42 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Backends;
+using System.ComponentModel;
 
-namespace Xwt.GtkBackend
+namespace Xwt
 {
-	public partial class PasswordEntryBackend
+	[BackendType (typeof(ITextAreaBackend))]
+	public class TextArea: TextBox
 	{
-		string placeHolderText;
-		Pango.Layout layout;
-
-		public string PlaceholderText {
-			get { return placeHolderText; }
-			set {
-				if (placeHolderText != value) {
-					if (placeHolderText == null)
-						Widget.ExposeEvent += HandleWidgetExposeEvent;
-					else if (value == null)
-						Widget.ExposeEvent -= HandleWidgetExposeEvent;
-				}
-				placeHolderText = value;
-			}
+		public TextArea ()
+		{
 		}
 
-		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			Widget.RenderPlaceholderText (args, placeHolderText, ref layout);
+		ITextAreaBackend Backend {
+			get { return (ITextAreaBackend) BackendHost.Backend; }
 		}
 
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
+		[DefaultValue (WrapMode.None)]
+		public WrapMode Wrap {
+			get { return Backend.Wrap; }
+			set { Backend.Wrap = value; }
 		}
 	}
 }
