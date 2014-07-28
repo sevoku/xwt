@@ -91,7 +91,7 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public GridLines GridLines
+		public GridLines GridLinesVisible
 		{
 			get { return Widget.EnableGridLines.ToXwtValue (); }
 			set { Widget.EnableGridLines = value.ToGtkValue (); }
