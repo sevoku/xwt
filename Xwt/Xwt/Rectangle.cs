@@ -38,7 +38,15 @@ namespace Xwt
 		public double Width { get; set; }
 		public double Height { get; set; }
 
+		/// <summary>
+		/// A valid rectangle with a zero size.
+		/// </summary>
 		public static Rectangle Zero = new Rectangle ();
+
+		/// <summary>
+		/// Represents an invalid rectangle (Not a Rectangle)
+		/// </summary>
+		public static Rectangle NaR = new Rectangle (double.NaN, double.NaN, double.NaN, double.NaN);
 		
 		public override string ToString ()
 		{
@@ -110,8 +118,7 @@ namespace Xwt
 		
 		public bool IntersectsWith (Rectangle r)
 		{
-			return !((Left >= r.Right) || (Right <= r.Left) ||
-					(Top >= r.Bottom) || (Bottom <= r.Top));
+			return !Rectangle.IsNaR (Intersect (r));
 		}
 		
 		public Rectangle Union (Rectangle r)
@@ -121,6 +128,13 @@ namespace Xwt
 		
 		public static Rectangle Union (Rectangle r1, Rectangle r2)
 		{
+			if (Rectangle.IsNaR (r1) && Rectangle.IsNaR (r2))
+				return Rectangle.NaR;
+			if (Rectangle.IsNaR (r1))
+				return r2;
+			if (Rectangle.IsNaR (r2))
+				return r1;
+
 			return FromLTRB (Math.Min (r1.Left, r2.Left),
 					 Math.Min (r1.Top, r2.Top),
 					 Math.Max (r1.Right, r2.Right),
@@ -134,6 +148,9 @@ namespace Xwt
 
 		public static Rectangle Intersect (Rectangle r1, Rectangle r2)
 		{
+			if (Rectangle.IsNaR (r1) || Rectangle.IsNaR (r2))
+				return Rectangle.NaR;
+
 			var x = Math.Max (r1.X, r2.X);
 			var y = Math.Max (r1.Y, r2.Y);
 			var width = Math.Min (r1.Right, r2.Right) - x;
@@ -141,7 +158,7 @@ namespace Xwt
 
 			if (width < 0 || height < 0) 
 			{
-				return Rectangle.Zero;
+				return Rectangle.NaR;
 			}
 			return new Rectangle (x, y, width, height);
 		}
@@ -153,11 +170,11 @@ namespace Xwt
 		}
 		public double Bottom {
 			get { return Y + Height; }
-			set { Height = value - Y; }
+			set { Height = double.IsNaN (Y) ? value : value - Y; }
 		}
 		public double Right {
 			get { return X + Width; }
-			set { Width = value - X; }
+			set { Width = double.IsNaN (X) ? value : value - X; }
 		}
 		public double Left {
 			get { return X; }
@@ -166,6 +183,16 @@ namespace Xwt
 		
 		public bool IsEmpty {
 			get { return (Width <= 0) || (Height <= 0); }
+		}
+
+		/// <summary>
+		/// Determines whether the rectangle is not valid (Not-a-Rectangle).
+		/// </summary>
+		/// <returns><c>false</c> if the rectangle is valid; otherwise, <c>true</c>.</returns>
+		/// <param name="rectangle">Rectangle.</param>
+		public static bool IsNaR (Rectangle rectangle)
+		{
+			return (double.IsNaN(rectangle.X) || double.IsNaN(rectangle.Y) || double.IsNaN(rectangle.Width) || double.IsNaN(rectangle.Height));
 		}
 		
 		public Size Size {
@@ -203,18 +230,18 @@ namespace Xwt
 		public Rectangle Inflate (double width, double height)
 		{
 			Rectangle r = this;
-			r.X -= width;
-			r.Y -= height;
-			r.Width += width * 2;
-			r.Height += height * 2;
+			r.X = double.IsNaN (r.X) ? -width : r.X - width;
+			r.Y = double.IsNaN (r.Y) ? -height : r.Y - height;
+			r.Width = double.IsNaN (r.Width) ? width * 2 : r.Width + (width * 2);
+			r.Height = double.IsNaN (r.Height) ? height * 2 : r.Height + (height * 2);
 			return r;
 		}
 		
 		public Rectangle Offset (double dx, double dy)
 		{
 			Rectangle r = this;
-			r.X += dx;
-			r.Y += dy;
+			r.X = double.IsNaN (r.X) ? dx : r.X + dx;
+			r.Y = double.IsNaN (r.Y) ? dy : r.Y + dy;
 			return r;
 		}
 		
