@@ -112,7 +112,6 @@ namespace Xwt.WPFBackend
 				flowDirection = AdornedComboBox.FlowDirection;
 				fontSize = AdornedComboBox.FontSize;
 				typeFace = AdornedComboBox.FontFamily.GetTypefaces ().FirstOrDefault ();
-
 			}
 			var text = new System.Windows.Media.FormattedText (PlaceholderText ?? "", CultureInfo.CurrentCulture, flowDirection, typeFace, fontSize, System.Windows.Media.Brushes.LightGray);
 

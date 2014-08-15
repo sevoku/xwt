@@ -108,7 +108,9 @@ namespace Samples
 
 			TextEntry te6 = new TextEntry ();
 			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
+			te6.PlaceholderText = "Placeholder text";
 			te6.MultiLine = true;
+			te6.MinHeight = 40;
 			PackStart (te6);
 
 			try {
