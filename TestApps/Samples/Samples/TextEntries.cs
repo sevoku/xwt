@@ -106,13 +106,6 @@ namespace Samples
 			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
-			TextEntry te6 = new TextEntry ();
-			te6.Text = "I should have" + Environment.NewLine + "multiple lines!";
-			te6.PlaceholderText = "Placeholder text";
-			te6.MultiLine = true;
-			te6.MinHeight = 40;
-			PackStart (te6);
-
 			try {
 				SearchTextEntry te7 = new SearchTextEntry ();
 				te7.PlaceholderText = "Type to search ...";
