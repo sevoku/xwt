@@ -56,7 +56,7 @@ namespace Samples
 				b2.Label = "Clicked!";
 			};
 			PackStart (b2);
-			
+
 			PackStart (new Button (StockIcons.ZoomIn.WithSize (22)));
 			PackStart (new Button (StockIcons.ZoomIn.WithSize (32), "Custom Size") { WidthRequest = 110, MinHeight = 50 });
 
