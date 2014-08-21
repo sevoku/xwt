@@ -72,7 +72,7 @@ namespace Xwt
 		EventHandler dragLeave;
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
-		EventHandler<PreviewTextInputEventArgs> previewTextInput;
+		EventHandler<TextInputEventArgs> textInput;
 		EventHandler mouseEntered;
 		EventHandler mouseExited;
 		EventHandler<ButtonEventArgs> buttonPressed;
@@ -168,9 +168,9 @@ namespace Xwt
 				Parent.OnKeyReleased (args);
 			}
 
-			void IWidgetEventSink.OnPreviewTextInput (PreviewTextInputEventArgs args)
+			void IWidgetEventSink.OnTextInput (TextInputEventArgs args)
 			{
-				Parent.OnPreviewTextInput (args);
+				Parent.OnTextInput (args);
 			}
 			
 			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
@@ -251,7 +251,7 @@ namespace Xwt
 			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
 			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
 			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
-			MapEvent (WidgetEvent.PreviewTextInput, typeof(Widget), "OnPreviewTextInput");
+			MapEvent (WidgetEvent.TextInput, typeof(Widget), "OnTextInput");
 			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
 			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
 			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
@@ -826,10 +826,10 @@ namespace Xwt
 				keyReleased (this, args);
 		}
 
-		internal protected virtual void OnPreviewTextInput (PreviewTextInputEventArgs args)
+		internal protected virtual void OnTextInput (TextInputEventArgs args)
 		{
-			if (previewTextInput != null)
-				previewTextInput (this, args);
+			if (textInput != null)
+				textInput (this, args);
 		}
 		
 		internal protected virtual void OnGotFocus (EventArgs args)
@@ -1504,14 +1504,14 @@ namespace Xwt
 			}
 		}
 
-		public event EventHandler<PreviewTextInputEventArgs> PreviewTextInput {
+		public event EventHandler<TextInputEventArgs> TextInput {
 			add {
-				BackendHost.OnBeforeEventAdd (WidgetEvent.PreviewTextInput, previewTextInput);
-				previewTextInput += value;
+				BackendHost.OnBeforeEventAdd (WidgetEvent.TextInput, textInput);
+				textInput += value;
 			}
 			remove {
-				previewTextInput -= value;
-				BackendHost.OnAfterEventRemove (WidgetEvent.PreviewTextInput, previewTextInput);
+				textInput -= value;
+				BackendHost.OnAfterEventRemove (WidgetEvent.TextInput, textInput);
 			}
 		}
 		

@@ -450,7 +450,7 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.PreviewKeyUp += WidgetKeyUpHandler;
 						break;
-					case WidgetEvent.PreviewTextInput:
+					case WidgetEvent.TextInput:
 						TextCompositionManager.AddPreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
 						break;
 					case WidgetEvent.ButtonPressed:
@@ -504,7 +504,7 @@ namespace Xwt.WPFBackend
 					case WidgetEvent.KeyReleased:
 						Widget.PreviewKeyUp -= WidgetKeyUpHandler;
 						break;
-					case WidgetEvent.PreviewTextInput:
+					case WidgetEvent.TextInput:
 						TextCompositionManager.RemovePreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
 						break;
 					case WidgetEvent.ButtonPressed:
@@ -606,10 +606,10 @@ namespace Xwt.WPFBackend
 
 		void WidgetPreviewTextInputHandler (object sender, System.Windows.Input.TextCompositionEventArgs e)
 		{
-			PreviewTextInputEventArgs args = new PreviewTextInputEventArgs(e.Text);
+			TextInputEventArgs args = new TextInputEventArgs(e.Text);
 			Context.InvokeUserCode(delegate
 			{
-				eventSink.OnPreviewTextInput(args);
+				eventSink.OnTextInput(args);
 			});
 			if (args.Handled)
 				e.Handled = true;
