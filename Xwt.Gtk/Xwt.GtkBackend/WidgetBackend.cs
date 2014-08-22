@@ -633,7 +633,7 @@ namespace Xwt.GtkBackend
 				m |= ModifierKeys.Control;
 			if ((args.Event.State & Gdk.ModifierType.Mod1Mask) != 0)
 				m |= ModifierKeys.Alt;
-			KeyEventArgs kargs = new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			KeyEventArgs kargs = new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnKeyReleased (kargs);
 			});
@@ -646,7 +646,7 @@ namespace Xwt.GtkBackend
 		{
 			Key k = (Key)args.Event.KeyValue;
 			ModifierKeys m = args.Event.State.ToXwtValue ();
-			KeyEventArgs kargs = new KeyEventArgs (k, m, false, (long)args.Event.Time);
+			KeyEventArgs kargs = new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnKeyPressed (kargs);
 			});
