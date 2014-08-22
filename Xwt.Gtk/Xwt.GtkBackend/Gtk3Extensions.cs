@@ -150,6 +150,11 @@ namespace Xwt.GtkBackend
 			}
 			return Gtk.StateFlags.Normal;
 		}
+
+		public static string GetText (this Gtk.TextInsertedArgs args)
+		{
+			return args.NewText;
+		}
 	}
 }
 

@@ -263,6 +263,8 @@ namespace Xwt.GtkBackend
 				MarkDestroyed (Frontend);
 				Widget.Destroy ();
 			}
+			if (IMContext != null)
+				IMContext.Dispose ();
 		}
 
 		void MarkDestroyed (Widget w)
@@ -523,7 +525,22 @@ namespace Xwt.GtkBackend
                     AllocEventBox();
 					EventsRootWidget.AddEvents ((int)Gdk.EventMask.ScrollMask);
                     Widget.ScrollEvent += HandleScrollEvent;
-                    break;
+					break;
+				case WidgetEvent.TextInput:
+					if (EditableWidget != null) {
+						EditableWidget.TextInserted += HandleTextInserted;
+					} else {
+						RunWhenRealized (delegate {
+							if (IMContext == null) {
+								IMContext = new Gtk.IMMulticontext ();
+								IMContext.ClientWindow = EventsRootWidget.GdkWindow;
+								IMContext.Commit += HandleImCommitEvent;
+							}
+						});
+						Widget.KeyPressEvent += HandleTextInputKeyPressEvent;
+						Widget.KeyReleaseEvent += HandleTextInputKeyReleaseEvent;
+					}
+					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -590,7 +607,17 @@ namespace Xwt.GtkBackend
 					if (!EventsRootWidget.IsRealized)
 						EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
                     Widget.ScrollEvent -= HandleScrollEvent;
-                    break;
+					break;
+				case WidgetEvent.TextInput:
+					if (EditableWidget != null) {
+						EditableWidget.TextInserted -= HandleTextInserted;
+					} else {
+						if (IMContext != null)
+							IMContext.Commit -= HandleImCommitEvent;
+						Widget.KeyPressEvent -= HandleTextInputKeyPressEvent;
+						Widget.KeyReleaseEvent -= HandleTextInputKeyReleaseEvent;
+					}
+					break;
 				}
 				
 				enabledEvents &= ~ev;
@@ -651,6 +678,62 @@ namespace Xwt.GtkBackend
 				EventSink.OnKeyPressed (kargs);
 			});
 			if (kargs.Handled)
+				args.RetVal = true;
+		}
+
+		protected Gtk.IMContext IMContext { get; set; }
+
+		[GLib.ConnectBefore]
+		void HandleTextInserted (object o, Gtk.TextInsertedArgs args)
+		{
+			if (String.IsNullOrEmpty (args.GetText ()))
+				return;
+
+			var pargs = new TextInputEventArgs (args.GetText ());
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnTextInput (pargs);
+			});
+
+			if (pargs.Handled)
+				args.RetVal = true;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleTextInputKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		{
+			if (IMContext != null)
+				IMContext.FilterKeypress (args.Event);
+		}
+
+		[GLib.ConnectBefore]
+		void HandleTextInputKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		{
+			if (IMContext != null)
+				IMContext.FilterKeypress (args.Event);
+
+			// new lines are not triggered by im, handle them here
+			if (args.Event.Key == Gdk.Key.Return ||
+			    args.Event.Key == Gdk.Key.ISO_Enter ||
+			    args.Event.Key == Gdk.Key.KP_Enter) {
+				var pargs = new TextInputEventArgs (Environment.NewLine);
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnTextInput (pargs);
+				});
+			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleImCommitEvent (object o, Gtk.CommitArgs args)
+		{
+			if (String.IsNullOrEmpty (args.Str))
+				return;
+
+			var pargs = new TextInputEventArgs (args.Str);
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnTextInput (pargs);
+			});
+
+			if (pargs.Handled)
 				args.RetVal = true;
 		}
 

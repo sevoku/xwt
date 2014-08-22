@@ -123,6 +123,11 @@ namespace Xwt.GtkBackend
 			foreach (var widget in container.Children)
 				widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
 		}
+
+		public static string GetText (this Gtk.TextInsertedArgs args)
+		{
+			return args.Text;
+		}
 	}
 }
 
