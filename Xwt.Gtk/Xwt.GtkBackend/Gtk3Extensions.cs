@@ -152,6 +152,11 @@ namespace Xwt.GtkBackend
 			return Gtk.StateFlags.Normal;
 		}
 
+		public static string GetText (this Gtk.TextInsertedArgs args)
+		{
+			return args.NewText;
+		}
+
 		public static void RenderPlaceholderText (this Gtk.TextView textView, Cairo.Context cr, string placeHolderText, ref Pango.Layout layout)
 		{
 			if (textView.Buffer.Text.Length > 0)
