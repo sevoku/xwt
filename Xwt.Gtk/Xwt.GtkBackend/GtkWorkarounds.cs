@@ -1214,6 +1214,18 @@ namespace Xwt.GtkBackend
 			return new Gtk.ComboBoxEntry ();
 			#endif
 		}
+
+		public static Xwt.Point CheckPointerCoordinates (this Gtk.Widget widget, Gdk.Window eventWindow, double x, double y)
+		{
+			if (widget is Gtk.Container && widget.GdkWindow != eventWindow)
+			{
+				int pointer_x, pointer_y;
+				widget.GetPointer (out pointer_x, out pointer_y);
+				return new Xwt.Point (pointer_x, pointer_y);
+			} else {
+				return new Xwt.Point (x, y);
+			}
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
