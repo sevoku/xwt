@@ -32,6 +32,18 @@ namespace Xwt.GtkBackend
 		string placeHolderText;
 		Pango.Layout layout;
 
+		public override Color BackgroundColor {
+			get {
+				if (UsingCustomBackgroundColor)
+					return base.BackgroundColor;
+				return Widget.GetBaseColor ();
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.SetBaseColor (value);
+			}
+		}
+
 		public string PlaceholderText {
 			get { return placeHolderText; }
 			set {

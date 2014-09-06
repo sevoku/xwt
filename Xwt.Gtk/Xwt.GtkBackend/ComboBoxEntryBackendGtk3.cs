@@ -1,8 +1,8 @@
-//
-// ButtonBackendGtk.cs
+﻿//
+// ComboBoxEntryBackendGtk3.cs
 //
 // Author:
-//       Vsevolod Kukol <v.kukol@rubologic.de>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Vsevolod Kukol
 //
@@ -24,37 +24,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public partial class ButtonBackend
+	public partial class ComboBoxEntryBackend
 	{
-		protected override void SetBackgroundColor (Color color)
+		protected override void SetBackgroundColor (Xwt.Drawing.Color color)
 		{
 			Widget.SetBackgroundColor (color);
-		}
-
-		void SetMiniModeGtk (bool miniMode)
-		{
-			if (miniMode) {
-				Widget.ExposeEvent += HandleExposeEvent;
-				Widget.SizeRequested += HandleSizeRequested;
-			}
-		}
-
-		void HandleSizeRequested (object o, Gtk.SizeRequestedArgs args)
-		{
-			args.Requisition = Widget.Child.SizeRequest ();
-		}
-
-		[GLib.ConnectBefore]
-		void HandleExposeEvent (object o, Gtk.ExposeEventArgs args)
-		{
-			var gc = Widget.Style.BackgroundGC (Widget.State);
-			Widget.GdkWindow.DrawRectangle (gc, true, Widget.Allocation);
-			Widget.PropagateExpose (Widget.Child, args.Event);
-			args.RetVal = true;
+			((Gtk.Entry)Widget.Child).SetBackgroundColor (color);
 		}
 	}
 }

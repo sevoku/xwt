@@ -75,9 +75,9 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		protected override void SetBackgroundColor (Xwt.Drawing.Color color)
 		{
-			base.OnSetBackgroundColor (color);
+			base.SetBackgroundColor (color);
 			Widget.SetBackgroundColor (color);
 			Widget.SetChildBackgroundColor (color);
 			EventsRootWidget.SetBackgroundColor (color);

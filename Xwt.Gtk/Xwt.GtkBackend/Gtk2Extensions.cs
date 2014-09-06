@@ -118,10 +118,31 @@ namespace Xwt.GtkBackend
 			widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
 		}
 
+		public static void SetBaseColor (this Gtk.Widget widget, Xwt.Drawing.Color color)
+		{
+			widget.ModifyBase (Gtk.StateType.Normal, ((Xwt.Drawing.Color)color).ToGtkValue ());
+		}
+
 		public static void SetChildBackgroundColor (this Gtk.Container container, Xwt.Drawing.Color color)
 		{
 			foreach (var widget in container.Children)
 				widget.ModifyBg (Gtk.StateType.Normal, color.ToGtkValue ());
+		}
+
+		public static void SetChildBaseColor (this Gtk.Container container, Xwt.Drawing.Color color)
+		{
+			foreach (var widget in container.Children)
+				widget.ModifyBase (Gtk.StateType.Normal, color.ToGtkValue ());
+		}
+
+		public static Xwt.Drawing.Color GetBackgroundColor (this Gtk.Widget widget)
+		{
+			return widget.Style.Background (Gtk.StateType.Normal).ToXwtValue ();
+		}
+
+		public static Xwt.Drawing.Color GetBaseColor (this Gtk.Widget widget)
+		{
+			return widget.Style.Base (Gtk.StateType.Normal).ToXwtValue ();
 		}
 	}
 }

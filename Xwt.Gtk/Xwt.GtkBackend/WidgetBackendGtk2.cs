@@ -33,9 +33,14 @@ namespace Xwt.GtkBackend
 	{
 		bool gettingPreferredSize;
 
-		protected virtual void OnSetBackgroundColor (Color color)
+		protected virtual void SetBackgroundColor (Color color)
 		{
 			EventsRootWidget.SetBackgroundColor (color);
+		}
+
+		protected virtual Color GetBackgroundColor ()
+		{
+			return EventsRootWidget.GetBackgroundColor ();
 		}
 
 		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)

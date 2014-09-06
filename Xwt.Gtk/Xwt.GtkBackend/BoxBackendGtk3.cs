@@ -29,11 +29,11 @@ namespace Xwt.GtkBackend
 {
 	partial class BoxBackend
 	{
-		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
+		protected override void SetBackgroundColor (Xwt.Drawing.Color color)
 		{
 			if (EventsRootWidget != null)
 				EventsRootWidget.SetBackgroundColor (color);
-			base.OnSetBackgroundColor (color);
+			base.SetBackgroundColor (color);
 		}
 	}
 

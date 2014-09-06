@@ -38,16 +38,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public override Color BackgroundColor {
-			get {
-				return base.BackgroundColor;
-			}
-			set {
-				base.BackgroundColor = value;
-				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGtkValue ());
-			}
-		}
-
 		public override void EnableEvent (object eventId)
 		{
 			base.EnableEvent (eventId);

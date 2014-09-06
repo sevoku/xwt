@@ -74,16 +74,6 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public override Color BackgroundColor {
-			get {
-				return base.BackgroundColor;
-			}
-			set {
-				base.BackgroundColor = value;
-				Widget.ModifyBase (Gtk.StateType.Normal, value.ToGtkValue ());
-			}
-		}
-
 		public bool ReadOnly {
 			get {
 				return !Widget.IsEditable;

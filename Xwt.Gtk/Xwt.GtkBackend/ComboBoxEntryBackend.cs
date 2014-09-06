@@ -28,7 +28,7 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
+	public partial class ComboBoxEntryBackend: ComboBoxBackend, IComboBoxEntryBackend
 	{
 		TextEntryBackend entryBackend;
 		
@@ -48,12 +48,6 @@ namespace Xwt.GtkBackend
 			get {
 				return entryBackend;
 			}
-		}
-
-		protected override void OnSetBackgroundColor (Xwt.Drawing.Color color)
-		{
-			Widget.SetBackgroundColor (color);
-			Widget.SetChildBackgroundColor (color);
 		}
 	}
 	

@@ -342,12 +342,12 @@ namespace Xwt.GtkBackend
 		
 		public virtual Color BackgroundColor {
 			get {
-				return customBackgroundColor.HasValue ? customBackgroundColor.Value : Widget.Style.Background (Gtk.StateType.Normal).ToXwtValue ();
+				return customBackgroundColor.HasValue ? customBackgroundColor.Value : GetBackgroundColor ();
 			}
 			set {
 				customBackgroundColor = value;
 				AllocEventBox (visibleWindow: true);
-				OnSetBackgroundColor (value);
+				SetBackgroundColor (value);
 			}
 		}
 		

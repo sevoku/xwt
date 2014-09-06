@@ -31,9 +31,14 @@ namespace Xwt.GtkBackend
 {
 	public partial class WidgetBackend
 	{
-		protected virtual void OnSetBackgroundColor (Color color)
+		protected virtual void SetBackgroundColor (Color color)
 		{
 			Widget.SetBackgroundColor (color);
+		}
+
+		protected virtual Color GetBackgroundColor ()
+		{
+			return Widget.GetBackgroundColor ();
 		}
 
 		public virtual Size GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)

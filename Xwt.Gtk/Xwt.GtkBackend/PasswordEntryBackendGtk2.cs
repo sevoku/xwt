@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
@@ -31,6 +32,18 @@ namespace Xwt.GtkBackend
 	{
 		string placeHolderText;
 		Pango.Layout layout;
+
+		public override Color BackgroundColor {
+			get {
+				if (UsingCustomBackgroundColor)
+					return base.BackgroundColor;
+				return Widget.GetBaseColor ();
+			}
+			set {
+				base.BackgroundColor = value;
+				Widget.SetBaseColor (value);
+			}
+		}
 
 		public string PlaceholderText {
 			get { return placeHolderText; }
