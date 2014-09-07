@@ -1214,6 +1214,23 @@ namespace Xwt.GtkBackend
 			return new Gtk.ComboBoxEntry ();
 			#endif
 		}
+
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern IntPtr gtk_message_dialog_get_message_area(IntPtr raw);
+		
+		public static Gtk.Box GetMessageArea(this Gtk.MessageDialog dialog)
+		{
+			#if XWT_GTK3
+			return (Gtk.Box)dialog.MessageArea;
+			#else
+			if (GtkWorkarounds.GtkMinorVersion < 22) // message area not present before 2.22
+				return dialog.VBox; // TODO: this looks ugly, maybe iterate children to find message vbox
+			IntPtr raw_ret = gtk_message_dialog_get_message_area(dialog.Handle);
+			Gtk.Box ret = GLib.Object.GetObject(raw_ret) as Gtk.Box;
+			return ret;
+			#endif
+		}
 	}
 	
 	public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
