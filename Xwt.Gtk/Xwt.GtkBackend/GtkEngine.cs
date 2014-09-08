@@ -334,15 +334,14 @@ namespace Xwt.GtkBackend
 
 		public override ToolkitFeatures SupportedFeatures {
 			get {
-				#if XWT_GTK3
 				var f = ToolkitFeatures.All;
-				if (Platform.IsWindows)
+
+				if (GtkWorkarounds.GtkMajorVersion <= 2 ||
+				    GtkWorkarounds.GtkMajorVersion == 3 && GtkWorkarounds.GtkMinorVersion < 8)
 					f &= ~ToolkitFeatures.WidgetOpacity;
-				#else
-				var f = ToolkitFeatures.All & ~ToolkitFeatures.WidgetOpacity;
+
 				if (Platform.IsWindows)
 					f &= ~ToolkitFeatures.WindowOpacity;
-				#endif
 				return f;
 			}
 		}

@@ -29,7 +29,7 @@ namespace Xwt.GtkBackend
 		}
 
 		#if XWT_GTK3
-		public static Gdk.RGBA ToGdkValue (this Xwt.Drawing.Color color)
+		public static Gdk.RGBA ToGtkRgbaValue (this Xwt.Drawing.Color color)
 		{
 			var rgba = new Gdk.RGBA ();
 			rgba.Red = color.Red;
@@ -39,9 +39,9 @@ namespace Xwt.GtkBackend
 			return rgba;
 		}
 
-		public static Xwt.Drawing.Color ToXwtValue (this Gdk.RGBA rgba)
+		public static Color ToXwtValue (this Gdk.RGBA color)
 		{
-			return new Xwt.Drawing.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha);
+			return new Color (color.Red, color.Green, color.Blue, color.Alpha);
 		}
 		#endif
 
