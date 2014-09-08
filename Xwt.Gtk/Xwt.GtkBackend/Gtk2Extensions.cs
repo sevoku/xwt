@@ -93,9 +93,14 @@ namespace Xwt.GtkBackend
 			return context.Targets;
 		}
 
-		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget)
+		public static void AddContent (this Gtk.Dialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
 		{
-			dialog.VBox.PackStart (widget);
+			dialog.VBox.PackStart (widget, expand, fill, padding);
+		}
+
+		public static void AddContent (this Gtk.MessageDialog dialog, Gtk.Widget widget, bool expand = true, bool fill = true, uint padding = 0)
+		{
+			dialog.GetMessageArea().PackStart (widget, expand, fill, padding);
 		}
 
 		public static void SetContentSpacing (this Gtk.Dialog dialog, int spacing)
