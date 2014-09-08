@@ -105,6 +105,7 @@
     <Compile Include="Samples\SpinButtonSample.cs" />
     <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\MouseCursors.cs" />
+    <Compile Include="Samples\MessageDialogs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
