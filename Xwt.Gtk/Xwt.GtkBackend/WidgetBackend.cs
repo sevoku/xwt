@@ -801,7 +801,8 @@ namespace Xwt.GtkBackend
 
 		void HandleMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
 		{
-			var a = new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var pointer_coords = Widget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			var a = new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnMouseMoved (a);
 			});
@@ -812,8 +813,11 @@ namespace Xwt.GtkBackend
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = Widget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
+
 			a.Button = (PointerButton) args.Event.Button;
 			ApplicationContext.InvokeUserCode (delegate {
 				EventSink.OnButtonReleased (a);
@@ -826,8 +830,10 @@ namespace Xwt.GtkBackend
 		void HandleButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = Widget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
 
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
