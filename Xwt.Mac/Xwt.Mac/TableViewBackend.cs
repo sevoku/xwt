@@ -29,6 +29,7 @@ using MonoMac.AppKit;
 using Xwt.Backends;
 using System.Collections.Generic;
 using MonoMac.Foundation;
+using System.Linq;
 
 
 namespace Xwt.Mac
@@ -41,6 +42,13 @@ namespace Xwt.Mac
 		ScrollView scroll;
 		NSObject selChangeObserver;
 		NormalClipView clipView;
+
+		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
+
+		class CellInfo {
+			public ICellRenderer Cell;
+			public int Column;
+		}
 		
 		public TableViewBackend ()
 		{
@@ -199,6 +207,7 @@ namespace Xwt.Mac
 			hc.Title = col.Title ?? "";
 			tcol.HeaderCell = hc;
 			Widget.InvalidateIntrinsicContentSize ();
+			MapColumn (cols.Count - 1, col, (CompositeCell)c);
 			return tcol;
 		}
 		object IColumnContainerBackend.AddColumn (ListViewColumn col)
@@ -214,7 +223,57 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
+			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
+			tcol.DataCell = c;
+			MapColumn (cols.IndexOf (tcol), col, (CompositeCell)c);
+		}
+
+		void MapColumn (int colindex, ListViewColumn col, CompositeCell cell)
+		{
+			foreach (var k in cellViews.Where (e => e.Value.Column == colindex).Select (e => e.Key).ToArray ())
+				cellViews.Remove (k);
+
+			for (int i = 0; i < col.Views.Count; i++) {
+				var v = col.Views [i];
+				var r = cell.Cells [i];
+				cellViews [v] = new CellInfo {
+					Cell = r,
+					Column = colindex
+				};
+			}
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			var cellInfo = cellViews[cell];
+			var r = Table.GetCellFrame (cellInfo.Column, row);
+			var container = Table.GetCell (cellInfo.Column, row) as CompositeCell;
+			r = container.GetCellRect (r, (NSCell)cellInfo.Cell);
+			r.Y -= scroll.DocumentVisibleRect.Y;
+			r.X -= scroll.DocumentVisibleRect.X;
+			if (HeadersVisible)
+				r.Y += Table.HeaderView.Frame.Height;
+			return new Rectangle (r.X, r.Y, r.Width, r.Height);
+		}
+
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			var rect = Rectangle.Zero;
+			var columns = Table.TableColumns ();
+
+			for (int i = 0; i < columns.Length; i++)
+			{
+				var r = Table.GetCellFrame (i, row);
+				if (rect == Rectangle.Zero)
+					rect = new Rectangle (r.X, r.Y, r.Width, r.Height);
+				else
+					rect = rect.Union (new Rectangle (r.X, r.Y, r.Width, r.Height));
+			}
+			rect.Y -= scroll.DocumentVisibleRect.Y;
+			rect.X -= scroll.DocumentVisibleRect.X;
+			if (HeadersVisible)
+				rect.Y += Table.HeaderView.Frame.Height;
+			return rect;
 		}
 
 		public void SelectAll ()

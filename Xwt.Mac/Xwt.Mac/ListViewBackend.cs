@@ -121,23 +121,9 @@ namespace Xwt.Mac
 			source.SetValue ((int)pos, nField, value);
 		}
 
-		// TODO
-		public bool BorderVisible { get; set; }
-
-
 		public int GetRowAtPosition (Point p)
 		{
 			return Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
-		}
-
-		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
-		{
-			return Rectangle.Zero;
-		}
-
-		public Rectangle GetRowBounds (int row, bool includeMargin)
-		{
-			throw new NotImplementedException ();
 		}
 	}
 	

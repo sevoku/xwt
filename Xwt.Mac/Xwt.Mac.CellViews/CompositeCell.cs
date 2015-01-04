@@ -45,6 +45,12 @@ namespace Xwt.Mac
 		ITablePosition tablePosition;
 		ApplicationContext context;
 
+		public List<ICellRenderer> Cells {
+			get {
+				return cells;
+			}
+		}
+
 		static CompositeCell ()
 		{
 			Util.MakeCopiable<CompositeCell> ();
@@ -245,11 +251,9 @@ namespace Xwt.Mac
 
 		public RectangleF GetCellRect (RectangleF cellFrame, NSCell cell)
 		{
-			if (tablePosition is TableRow) {
-				foreach (var c in GetCells (cellFrame)) {
-					if (c.Cell == cell)
-						return c.Frame;
-				}
+			foreach (var c in GetCells (cellFrame)) {
+				if (c.Cell == cell)
+					return c.Frame;
 			}
 			return RectangleF.Empty;
 		}
