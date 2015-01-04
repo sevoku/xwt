@@ -200,5 +200,15 @@ namespace Xwt.WPFBackend
 		protected IListBoxEventSink ListBoxEventSink {
 			get { return (IListBoxEventSink) EventSink; }
 		}
+
+		public int GetRowAtPosition(Point p)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Rectangle GetRowBounds (int row, bool includeMargin)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
