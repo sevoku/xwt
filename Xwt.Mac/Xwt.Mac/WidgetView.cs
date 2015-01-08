@@ -167,6 +167,25 @@ namespace Xwt.Mac
 			});
 		}
 
+		public override void KeyDown (NSEvent theEvent)
+		{
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyPressed (theEvent.ToXwtKeyEventArgs());
+			});
+
+			if (!String.IsNullOrEmpty(theEvent.Characters))
+				context.InvokeUserCode (delegate {
+				eventSink.OnPreviewTextInput (new PreviewTextInputEventArgs(theEvent.Characters));
+			});
+		}
+
+		public override void KeyUp (NSEvent theEvent)
+		{
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyReleased (theEvent.ToXwtKeyEventArgs());
+			});
+		}
+
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
 			bool changed = !newSize.Equals (Frame.Size);
