@@ -40,6 +40,9 @@ namespace Xwt.Mac
 		{
 			base.Initialize ();
 			ViewObject = new MacDatePicker ();
+			Widget.DatePickerMode = NSDatePickerMode.Single;
+			Widget.DatePickerStyle = NSDatePickerStyle.TextFieldAndStepper;
+			Widget.DatePickerElements = DatePickerStyle.DateTime.ToMacValue();
 		}
 
 		public override void EnableEvent (object eventId)
@@ -63,12 +66,38 @@ namespace Xwt.Mac
 
 		#region IDatePickerBackend implementation
 
+		// NSDate timezone workaround: cache and restore the DateTimeKind of the
+		// users DateTime object, since all conversions between DateTime and NSDate
+		// are in UTC (see https://github.com/mono/maccore/blob/master/src/Foundation/NSDate.cs).
+		bool userTimeIsUTC;
+
 		public DateTime DateTime {
 			get {
-				return (DateTime)Widget.DateValue;
+				if (userTimeIsUTC)
+					return ((DateTime)Widget.DateValue).ToUniversalTime();
+				else
+					return ((DateTime)Widget.DateValue).ToLocalTime();
 			}
 			set {
-				Widget.DateValue = value;
+
+				if (value.Kind == DateTimeKind.Local) {
+					userTimeIsUTC = false;
+					Widget.TimeZone = NSTimeZone.LocalTimeZone;
+				} else {
+					userTimeIsUTC = true;
+					Widget.TimeZone = NSTimeZone.FromName("UTC");
+				}
+
+				Widget.DateValue = value.ToUniversalTime();
+			}
+		}
+
+		public DatePickerStyle Style {
+			get {
+				return Widget.DatePickerElements.ToXwtValue();
+			}
+			set {
+				Widget.DatePickerElements = value.ToMacValue ();
 			}
 		}
 
