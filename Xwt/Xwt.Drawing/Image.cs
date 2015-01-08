@@ -246,7 +246,7 @@ namespace Xwt.Drawing
 
 			List<Tuple<string,object>> altImages = null;
 			foreach (var s in supportedScales) {
-				var fn = file.Substring (0, file.Length - ext.Length) + "@" + s + ext;
+				var fn = file.Substring (0, file.Length - ext.Length) + "@" + s + "x" + ext;
 				if (File.Exists (fn)) {
 					if (altImages == null) {
 						altImages = new List<Tuple<string, object>> ();
@@ -600,7 +600,7 @@ namespace Xwt.Drawing
 		{
 			var s = GetFixedSize ();
 			var bmp = ToolkitEngine.ImageBackendHandler.ConvertToBitmap (Backend, s.Width, s.Height, scaleFactor, format);
-			return new BitmapImage (bmp, s);
+			return new BitmapImage (bmp, s, ToolkitEngine);
 		}
 
 		protected virtual Size GetDefaultSize ()
@@ -625,6 +625,8 @@ namespace Xwt.Drawing
 			public Assembly ResourceAssembly;
 
 			public Func<Stream[]> ImageLoader;
+
+			public ImageDrawCallback DrawCallback;
 		}
 
 		public object Backend {
@@ -672,6 +674,15 @@ namespace Xwt.Drawing
 			sources = new [] { 
 				new NativeImageSource {
 					ImageLoader = imageLoader
+				}
+			};
+		}
+
+		public void SetCustomDrawSource (ImageDrawCallback drawCallback)
+		{
+			sources = new [] { 
+				new NativeImageSource {
+					DrawCallback = drawCallback
 				}
 			};
 		}
@@ -730,6 +741,8 @@ namespace Xwt.Drawing
 						newBackend = targetToolkit.ImageBackendHandler.LoadFromResource (s.ResourceAssembly, s.Source);
 					else if (s.Source != null)
 						newBackend = targetToolkit.ImageBackendHandler.LoadFromFile (s.Source);
+					else if (s.DrawCallback != null)
+						newBackend = targetToolkit.ImageBackendHandler.CreateCustomDrawn (s.DrawCallback);
 					else
 						throw new NotSupportedException ();
 					frames.Add (newBackend);

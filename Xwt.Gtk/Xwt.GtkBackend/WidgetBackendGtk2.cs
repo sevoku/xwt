@@ -59,9 +59,7 @@ namespace Xwt.GtkBackend
 		{
 			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
 				// Enabling a size request event for the first time
-				#if !XWT_GTK3
 				Widget.SizeRequested += HandleWidgetSizeRequested;
-				#endif
 			}
 		}
 
@@ -69,9 +67,7 @@ namespace Xwt.GtkBackend
 		{
 			if ((enabledEvents & WidgetEvent.PreferredSizeCheck) == 0 && !minSizeSet) {
 				// All size request events have been disabled
-				#if !XWT_GTK3
 				Widget.SizeRequested -= HandleWidgetSizeRequested;
-				#endif
 			}
 		}
 
