@@ -212,6 +212,13 @@ namespace Xwt.GtkBackend
 			cr.MoveTo (x, y);
 			Pango.CairoHelper.ShowLayout (cr, layout);
 		}
+
+		public static double GetSliderPosition (this Gtk.Scale scale)
+		{
+			int start, end;
+			scale.GetSliderRange (out start, out end);
+			return start + ((end - start) / 2);
+		}
 	}
 }
 
