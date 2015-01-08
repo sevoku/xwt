@@ -2,7 +2,7 @@
 // TextAreaBackendGtk2.cs
 //
 // Author:
-//       Vsevolod Kukol <v.kukol@rubologic.de>
+//       Vsevolod Kukol <sevo@sevo.org>
 //
 // Copyright (c) 2014 Vsevolod Kukol
 //
@@ -23,14 +23,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
 namespace Xwt.GtkBackend
 {
 	public partial class TextAreaBackend
 	{
 		string placeHolderText;
-		Pango.Layout layout;
 
 		public string PlaceholderText {
 			get { return placeHolderText; }
@@ -48,18 +46,6 @@ namespace Xwt.GtkBackend
 		void HandleWidgetExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
 			TextView.RenderPlaceholderText (args, placeHolderText, ref layout);
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				var l = layout;
-				if (l != null) {
-					l.Dispose ();
-					layout = null;
-				}
-			}
-			base.Dispose (disposing);
 		}
 	}
 }

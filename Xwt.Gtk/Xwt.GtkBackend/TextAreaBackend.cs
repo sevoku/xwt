@@ -32,7 +32,7 @@ using Xwt.Drawing;
 namespace Xwt.GtkBackend
 {
 	public partial class TextAreaBackend : WidgetBackend, ITextAreaBackend
-	{		
+	{
 		public override void Initialize ()
 		{
 			textView = new Gtk.TextView ();
@@ -70,6 +70,16 @@ namespace Xwt.GtkBackend
 			set {
 				base.BackgroundColor = value;
 				TextView.ModifyBase (Gtk.StateType.Normal, value.ToGtkValue ());
+			}
+		}
+
+		Pango.Layout layout;
+		public override object Font {
+			get { return base.Font; }
+			set {
+				base.Font = value;
+				TextView.ModifyFont ((Pango.FontDescription)value);
+				layout = null;
 			}
 		}
 
@@ -124,14 +134,6 @@ namespace Xwt.GtkBackend
 					((Gtk.Frame)Widget).ShadowType = Gtk.ShadowType.None;
 					((Gtk.Frame)Widget).BorderWidth = 0;
 				}
-			}
-		}
-
-		public override object Font {
-			get { return base.Font; }
-			set {
-				base.Font = value;
-				TextView.ModifyFont ((Pango.FontDescription)value);
 			}
 		}
 
@@ -312,6 +314,18 @@ namespace Xwt.GtkBackend
 				isMouseSelection = false;
 				HandleSelectionChanged ();
 			}
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				var l = layout;
+				if (l != null) {
+					l.Dispose ();
+					layout = null;
+				}
+			}
+			base.Dispose (disposing);
 		}
 	}
 }

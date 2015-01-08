@@ -106,45 +106,45 @@ namespace Samples
 			te5.PlaceholderText = "Placeholder text";
 			PackStart (te5);
 
-			try {
-				SearchTextEntry te7 = new SearchTextEntry ();
-				te7.PlaceholderText = "Type to search ...";
-				PackStart (te7);
-
-				SearchTextEntry te8 = new SearchTextEntry ();
-				te8.PlaceholderText = "I should have no frame";
-				te8.ShowFrame = false;
-				PackStart (te8);
-			} catch (InvalidOperationException ex) {
-				Console.WriteLine (ex);
-			}
-
 			HBox hbox1 = new HBox ();
 
-			TextArea te9 = new TextArea ();
-			te9.Text = "I should have" + Environment.NewLine + "multiple lines and be centered!";
-			te9.PlaceholderText = "Placeholder text";
-			te9.TextAlignment = Alignment.Center;
-			te9.MinHeight = 40;
-			te9.Activated += (sender, e) => MessageDialog.ShowMessage ("Activated");
-			hbox1.PackStart (te9, true);
+			TextArea ta1 = new TextArea ();
+			ta1.Text = "I should have" + Environment.NewLine + "multiple lines and be centered!";
+			ta1.PlaceholderText = "Placeholder text";
+			ta1.TextAlignment = Alignment.Center;
+			ta1.MinHeight = 40;
+			ta1.Activated += (sender, e) => MessageDialog.ShowMessage ("Activated");
+			hbox1.PackStart (ta1, true);
 
-			TextArea te10 = new TextArea ();
-			te10.Text = "I should have multiple lines," + Environment.NewLine + "no frame and should wrap on words!";
-			te10.PlaceholderText = "Placeholder text";
-			te10.ShowFrame = false;
-			te10.Wrap = WrapMode.Word;
-			hbox1.PackStart (te10, true);
+			TextArea ta2 = new TextArea ();
+			ta2.Text = "I should have multiple lines," + Environment.NewLine + "no frame and should wrap on words!";
+			ta2.PlaceholderText = "Placeholder text";
+			ta2.ShowFrame = false;
+			ta2.Wrap = WrapMode.Word;
+			hbox1.PackStart (ta2, true);
 
 			PackStart (hbox1);
 
-			TextArea te11 = new TextArea ();
-			te11.Text = "I should have\nmultiple lines,\nwrap on words,\n and scroll\nvertically ";
-			te11.PlaceholderText = "Placeholder text";
-			te11.Wrap = WrapMode.Word;
-			var scrollte11 = new ScrollView (te11);
-			scrollte11.HorizontalScrollPolicy = ScrollPolicy.Never;
-			PackStart (scrollte11);
+			TextArea ta3 = new TextArea ();
+			ta3.Text = "I should have\nmultiple lines,\nwrap on words,\n and scroll\nvertically ";
+			ta3.PlaceholderText = "Placeholder text";
+			ta3.Wrap = WrapMode.Word;
+			var scrollTa3 = new ScrollView (ta3);
+			scrollTa3.HorizontalScrollPolicy = ScrollPolicy.Never;
+			PackStart (scrollTa3);
+
+			try {
+				SearchTextEntry ts1 = new SearchTextEntry ();
+				ts1.PlaceholderText = "Type to search ...";
+				PackStart (ts1);
+
+				SearchTextEntry ts2 = new SearchTextEntry ();
+				ts2.PlaceholderText = "I should have no frame";
+				ts2.ShowFrame = false;
+				PackStart (ts2);
+			} catch (InvalidOperationException ex) {
+				Console.WriteLine (ex);
+			}
 		}
 	}
 }
