@@ -32,23 +32,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Cairo" />
-    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
@@ -143,10 +133,6 @@
     </Compile>
     <Compile Include="Xwt.GtkBackend.CellViews\CellViewBackend.cs" />
     <Compile Include="Xwt.GtkBackend\SearchTextEntryBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2Extensions.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2ViewPort.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2DrawingArea.cs" />
@@ -159,7 +145,11 @@
     <Compile Include="Xwt.GtkBackend\BoxBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\CanvasBackendGtk2.cs" />
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk2.cs" />
+    <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk2PopoverWindow.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackendGtk2.cs" />
   </ItemGroup>

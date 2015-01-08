@@ -146,12 +146,12 @@
     <Compile Include="Xwt.GtkBackend\BoxBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\CanvasBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\HeaderBoxGtk3.cs" />
-    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\WebViewBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
-    <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\GtkWebKitMini.cs" />
     <Compile Include="Xwt.GtkBackend\PopoverBackend.cs" />
     <Compile Include="Xwt.GtkBackend\Gtk3PopoverWindow.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorSelectorBackend.cs" />
+    <Compile Include="Xwt.GtkBackend\ColorPickerBackend.cs" />
     <Compile Include="Xwt.GtkBackend\PanedBackendGtk3.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackend.cs" />
     <Compile Include="Xwt.GtkBackend\TextAreaBackendGtk3.cs" />

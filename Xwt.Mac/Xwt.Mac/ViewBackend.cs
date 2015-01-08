@@ -229,11 +229,11 @@ namespace Xwt.Mac
 				Cursor = NSCursor.ResizeLeftRightCursor;
 			else if (cursor == CursorType.ResizeUpDown)
 				Cursor = NSCursor.ResizeUpDownCursor;
-			else if (cursor == CursorType.Move)
-				Cursor = NSCursor.ClosedHandCursor;
 			else if (cursor == CursorType.Invisible)
 				// TODO: load transparent cursor
 				Cursor = NSCursor.ArrowCursor;
+			else if (cursor == CursorType.Move)
+				Cursor = NSCursor.ClosedHandCursor;
 			else
 				Cursor = NSCursor.ArrowCursor;
 		}
