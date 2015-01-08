@@ -106,7 +106,6 @@
     <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\MouseCursors.cs" />
     <Compile Include="Samples\MessageDialogs.cs" />
-    <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\TreeViewFilter.cs" />
     <Compile Include="Samples\ListViewFilter.cs" />
   </ItemGroup>
