@@ -103,11 +103,13 @@
     <Compile Include="Samples\Image9Patch.cs" />
     <Compile Include="Samples\WebViewSample.cs" />
     <Compile Include="Samples\SpinButtonSample.cs" />
-    <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\MouseCursors.cs" />
     <Compile Include="Samples\MessageDialogs.cs" />
+    <Compile Include="Samples\MultithreadingSample.cs" />
     <Compile Include="Samples\TreeViewFilter.cs" />
     <Compile Include="Samples\ListViewFilter.cs" />
+    <Compile Include="Samples\ListViewCellBounds.cs" />
+    <Compile Include="Samples\TreeViewCellBounds.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
