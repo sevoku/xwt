@@ -1,5 +1,5 @@
 ﻿//
-// Gtk3Engine.cs
+// WindowBackendGtk3.cs
 //
 // Author:
 //       Vsevolod Kukol <sevo@sevo.org>
@@ -24,16 +24,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using Xwt.Backends;
+using Gtk;
 
 namespace Xwt.GtkBackend
 {
-	public class Gtk3Engine: GtkEngine
+	public class WindowBackendGtk3: WindowBackend, IWindowFrameBackend
 	{
-		public override void InitializeBackends ()
+		Gtk.HeaderBar titlebar;
+
+		public override void Initialize ()
 		{
-			base.InitializeBackends ();
-			RegisterBackend<IWindowBackend, WindowBackendGtk3> ();
+			base.Initialize ();
+
+			if (GtkWorkarounds.GtkMajorVersion >= 3 && GtkWorkarounds.GtkMinorVersion >= 10) {
+				titlebar = new Gtk.HeaderBar ();
+				titlebar.ShowCloseButton = true;
+				Window.SetTitlebar (titlebar);
+				titlebar.Show ();
+			}
+		}
+
+		public override void GetMetrics (out Size minSize, out Size decorationSize)
+		{
+			if (titlebar != null) {
+				var hs = titlebar.SizeRequest ();
+				minSize = new Size (hs.Width, 0);
+				decorationSize = new Size (0, hs.Height);
+			}
+			else {
+				minSize = decorationSize = Size.Zero;
+			}
 		}
 	}
 }

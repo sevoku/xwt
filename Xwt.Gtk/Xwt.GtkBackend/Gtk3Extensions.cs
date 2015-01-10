@@ -150,6 +150,22 @@ namespace Xwt.GtkBackend
 			}
 			return Gtk.StateFlags.Normal;
 		}
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_window_set_titlebar(IntPtr raw, IntPtr titlebar);
+
+		public static void SetTitlebar (this Gtk.Window window, Gtk.Widget titlebar)
+		{
+			gtk_window_set_titlebar (window.Handle, titlebar == null ? IntPtr.Zero : titlebar.Handle);
+		}
+
+		[DllImport(GtkInterop.LIBGTK, CallingConvention = CallingConvention.Cdecl)]
+		static extern void gtk_window_set_interactive_debugging(IntPtr raw, bool enable);
+
+		public static void SetInteractiveDebugging (this Gtk.Window window, bool enable)
+		{
+			gtk_window_set_interactive_debugging (window.Handle, enable);
+		}
 	}
 }
 
