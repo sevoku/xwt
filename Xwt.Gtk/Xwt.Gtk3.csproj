@@ -50,6 +50,7 @@
     <Compile Include="Xwt.GtkBackend\WidgetBackend.cs" />
     <Compile Include="Xwt.GtkBackend\WindowBackend.cs" />
     <Compile Include="Xwt.GtkBackend\GtkEngine.cs" />
+    <Compile Include="Xwt.GtkBackend\Gtk3Engine.cs" />
     <Compile Include="Xwt.GtkBackend\BoxBackend.cs" />
     <Compile Include="Xwt.GtkBackend\ButtonBackend.cs" />
     <Compile Include="Xwt.GtkBackend\NotebookBackend.cs" />

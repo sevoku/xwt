@@ -161,7 +161,7 @@ namespace Xwt
 			case ToolkitType.Gtk:
 				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=" + version;
 			case ToolkitType.Gtk3:
-				return "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3, Version=" + version;
+				return "Xwt.GtkBackend.Gtk3Engine, Xwt.Gtk3, Version=" + version;
 			case ToolkitType.Cocoa:
 				return "Xwt.Mac.MacEngine, Xwt.Mac, Version=" + version;
 			case ToolkitType.Wpf:
